@@ -50,12 +50,12 @@ public class ReviewWritable implements Writable{
         this.altitude = new DoubleWritable(Double.parseDouble(elements[3]));
         this.reviewDate = new Text(elements[4]);
         this.temperature = new Text(elements[5]);
-        this.rating = new DoubleWritable(Double.parseDouble(elements[6]));
+        this.rating = new DoubleWritable(elements[6].equals("?") ? -1.0 : Double.parseDouble(elements[6]));
         this.userId = new Text(elements[7]);
         this.userBirthday = new Text(elements[8]);
         this.userNationality = new Text(elements[9]);
         this.userCareer = CareerWritable.valueOf(elements[10].toUpperCase());
-        this.userIncome = new DoubleWritable(Double.parseDouble(elements[11]));
+        this.userIncome = new DoubleWritable(elements[11].equals("?") ? -1.0 : Double.parseDouble(elements[11]));
     }
 
     @Override

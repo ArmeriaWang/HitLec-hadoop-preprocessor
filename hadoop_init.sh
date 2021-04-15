@@ -1,5 +1,5 @@
 cd /home/armeria/Work/courses/db_calc/Lab1-1183710106/src/main/java
-if [ $1 -eq 1 ]
+if [ "$1" -eq 1 ]
 then
     stop-dfs.sh
     rm -rf /home/armeria/Applications/hadoop-3.3.0/tmp
