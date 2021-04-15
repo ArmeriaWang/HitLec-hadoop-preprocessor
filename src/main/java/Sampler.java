@@ -21,8 +21,8 @@ import org.apache.hadoop.util.Time;
 
 public class Sampler {
 
-    private static File debugLogFile;
-    private static BufferedWriter debugOut;
+//    private static File debugLogFile;
+//    private static BufferedWriter debugOut;
 
     public static class ReviewMapper extends Mapper<Object, Text, CareerWritable, ReviewWritable> {
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
@@ -42,30 +42,36 @@ public class Sampler {
                 throws IOException, InterruptedException {
             List<ReviewWritable> samples = new ArrayList<>();
             Random random = new Random(Time.getUtcTime());
-            debugLogFile = new File(String.format("/home/armeria/debug_info_%s.txt", key.getCareer().ordinal()));
+            File debugLogFile = new File(String.format("/home/armeria/debug_info_%s.txt", key.getCareer().ordinal()));
             if (!debugLogFile.exists()) {
                 debugLogFile.createNewFile();
             }
-            debugOut = new BufferedWriter(new FileWriter(debugLogFile));
+            BufferedWriter debugOut = new BufferedWriter(new FileWriter(debugLogFile));
             int cnt = 0;
             int layerSampleNum = (int) (1.0 * key.getCareerDataCount() * sampleRate);
             for (ReviewWritable review : reviews) {
-                debugOut.write(String.format("\n\ncnt = %d  layerSampleNum = %d\n", cnt, layerSampleNum) + review.toString());
+                debugOut.write(String.format("\n\ncnt = %d  layerSampleNum = %d\n", cnt, layerSampleNum) + review.toString() + "\n");
                 debugOut.flush();
                 if (cnt < layerSampleNum) {
                     samples.add(review);
                 } else {
                     double randomDouble = random.nextDouble();
-                    debugOut.write(String.format("randomDouble = %.2f\n", randomDouble));
+                    debugOut.write(String.format("rDouble = %.2f\n", randomDouble));
                     if (randomDouble < layerSampleNum * 1.0 / (cnt + 1)) {
                         int randomInt = random.nextInt(layerSampleNum);
-                        debugOut.write(String.format("This review replace %d-th, rId=%s\n", randomInt, samples.get(randomInt).getReviewId()));
+                        debugOut.write(String.format("This replace %d-th, rId=%s\n", randomInt, samples.get(randomInt).getReviewId()));
                         samples.set(randomInt, review);
                     }
                 }
                 cnt++;
             }
+            debugLogFile = new File(String.format("/home/armeria/real_samples_%s.txt", key.getCareer().ordinal()));
+            if (!debugLogFile.exists()) {
+                debugLogFile.createNewFile();
+            }
+            debugOut = new BufferedWriter(new FileWriter(debugLogFile));
             for (ReviewWritable review : samples) {
+                debugOut.write(review.getReviewId() + "\n");
                 context.write(new IntWritable(key.getCareer().ordinal()), new Text(review.getReviewId()));
             }
         }

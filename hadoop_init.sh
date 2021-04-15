@@ -13,7 +13,9 @@ hadoop com.sun.tools.javac.Main -d ./ ./*.java
 jar cf sampler.jar *.class
 hdfs dfs -rm -r /user/armeria/bdclab1/output
 hadoop jar sampler.jar Sampler /user/armeria/bdclab1/input /user/armeria/bdclab1/output
-hdfs dfs -cat /user/armeria/bdclab1/output/part-r-00000
+hdfs dfs -cat /user/armeria/bdclab1/output/part-r-00000 | head -n 20
 rm -rf ../../../output
 hadoop fs -get /user/armeria/bdclab1/output ../../../
 mv /home/armeria/debug* ../../../output
+mv /home/armeria/read_samples* ../../../output
+zip -q results_0.zip part-r-00000 debug_info_0.txt read_samples_0.txt
