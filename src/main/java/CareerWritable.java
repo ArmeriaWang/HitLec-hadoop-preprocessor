@@ -7,7 +7,7 @@ import org.apache.hadoop.io.WritableComparable;
 
 public class CareerWritable implements WritableComparable<CareerWritable> {
 
-    enum Career {
+    public enum Career {
         PROGRAMMER, TEACHER, WRITER, ACCOUNTANT, MANAGER, DOCTOR, ARTIST, FARMER
     }
 

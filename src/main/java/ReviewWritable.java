@@ -9,17 +9,17 @@ import org.apache.hadoop.io.Writable;
 public class ReviewWritable implements Writable{
     private final String rawString;
     private final Text reviewId;
-    private DoubleWritable longitude;
-    private DoubleWritable latitude;
-    private DoubleWritable altitude;
-    private Text reviewDate;
-    private Text temperature;
-    private DoubleWritable rating;
-    private Text userId;
-    private Text userBirthday;
-    private Text userNationality;
-    private CareerWritable userCareer;
-    private DoubleWritable userIncome;
+    private final DoubleWritable longitude;
+    private final DoubleWritable latitude;
+    private final DoubleWritable altitude;
+    private final Text reviewDate;
+    private final Text temperature;
+    private final DoubleWritable rating;
+    private final Text userId;
+    private final Text userBirthday;
+    private final Text userNationality;
+    private final CareerWritable userCareer;
+    private final DoubleWritable userIncome;
 
     /* public Review(String reviewId, double longitude, double latitude, double altitude, String reviewDate,
             String temperature, double rating, String userId, String userBirthday, String userNationality,

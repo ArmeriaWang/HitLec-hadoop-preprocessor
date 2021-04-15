@@ -7,6 +7,7 @@ import java.util.Random;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -27,7 +28,7 @@ public class Sampler {
         }
     }
 
-    public static class SampleReducer extends Reducer<CareerWritable, ReviewWritable, CareerWritable, ReviewWritable> {
+    public static class SampleReducer extends Reducer<CareerWritable, ReviewWritable, IntWritable, Text> {
         private final List<ReviewWritable> samples = new ArrayList<>();
         private final Random random = new Random();
         private static final double sampleRate = 0.01;
@@ -47,7 +48,7 @@ public class Sampler {
                 cnt++;
             }
             for (ReviewWritable review : samples) {
-                context.write(key, review);
+                context.write(new IntWritable(key.getCareer().ordinal()), new Text(review.getUserId()));
             }
         }
     }
@@ -59,8 +60,8 @@ public class Sampler {
         job.setMapperClass(ReviewMapper.class);
         job.setCombinerClass(SampleReducer.class);
         job.setReducerClass(SampleReducer.class);
-        job.setOutputKeyClass(CareerWritable.class);
-        job.setOutputValueClass(ReviewWritable.class);
+        job.setOutputKeyClass(IntWritable.class);
+        job.setOutputValueClass(Text.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
         System.exit(job.waitForCompletion(true) ? 0 : 1);
