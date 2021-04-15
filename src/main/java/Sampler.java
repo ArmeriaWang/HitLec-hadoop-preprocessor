@@ -50,6 +50,7 @@ public class Sampler {
             int layerSampleNum = (int) (1.0 * key.getCareerDataCount() * sampleRate);
             for (ReviewWritable review : reviews) {
                 debugOut.write(String.format("\ncnt = %d  layerSampleNum = %d\n", cnt, layerSampleNum) + review.toString());
+                debugOut.flush();
                 if (cnt < layerSampleNum) {
                     samples.add(review);
                 } else {
