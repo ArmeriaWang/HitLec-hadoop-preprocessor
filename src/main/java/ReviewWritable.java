@@ -7,7 +7,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 
 public class ReviewWritable implements Writable{
-    private final String rawString;
+    private final Text rawString;
     private final Text reviewId;
     private final DoubleWritable longitude;
     private final DoubleWritable latitude;
@@ -39,7 +39,7 @@ public class ReviewWritable implements Writable{
     } */
 
     public ReviewWritable() {
-        rawString = "";
+        rawString = new Text();
         reviewId = new Text();
         longitude = new DoubleWritable();
         latitude = new DoubleWritable();
@@ -56,7 +56,7 @@ public class ReviewWritable implements Writable{
 
     public ReviewWritable(String rawString) {
         String[] elements = rawString.split("\\|");
-        this.rawString = rawString;
+        this.rawString = new Text(rawString);
         this.reviewId = new Text(elements[0]);
         this.longitude = new DoubleWritable(Double.parseDouble(elements[1]));
         this.latitude = new DoubleWritable(Double.parseDouble(elements[2]));
@@ -73,7 +73,7 @@ public class ReviewWritable implements Writable{
 
     @Override
     public void write(DataOutput out) throws IOException {
-        Text.writeString(out, rawString);
+        this.rawString.write(out);
         this.reviewId.write(out);
         this.longitude.write(out);
         this.latitude.write(out);
@@ -90,7 +90,7 @@ public class ReviewWritable implements Writable{
 
     @Override
     public void readFields(DataInput in) throws IOException {
-        this.rawString = Text.readString(in);
+        this.rawString.readFields(in);
         this.reviewId.readFields(in);
         this.longitude.readFields(in);
         this.latitude.readFields(in);
@@ -155,7 +155,7 @@ public class ReviewWritable implements Writable{
 
     @Override
     public String toString() {
-        return rawString;
+        return rawString.toString();
     }
     
 }
