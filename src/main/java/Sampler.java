@@ -36,8 +36,9 @@ public class Sampler {
         public void reduce(CareerWritable key, Iterable<ReviewWritable> reviews, Context context)
                 throws IOException, InterruptedException {
             int cnt = 0;
-            int layerSampleNum = (int) (key.getCareerDataCount() * sampleRate);
+            int layerSampleNum = (int) (1.0 * key.getCareerDataCount() * sampleRate);
             for (ReviewWritable review : reviews) {
+                System.out.println(review.getReviewId());
                 if (cnt < layerSampleNum) {
                     samples.add(review);
                 } else {
