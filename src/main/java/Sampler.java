@@ -54,7 +54,7 @@ public class Sampler {
                 debugOut.flush();
                 if (cnt < layerSampleNum) {
                     samples.add(review);
-                } else {
+                } /*else {
                     double randomDouble = random.nextDouble();
                     debugOut.write(String.format("rDouble = %.2f\n", randomDouble));
                     if (randomDouble < layerSampleNum * 1.0 / (cnt + 1)) {
@@ -62,7 +62,7 @@ public class Sampler {
                         debugOut.write(String.format("This replace %d-th, rId=%s\n", randomInt, samples.get(randomInt).getReviewId()));
                         samples.set(randomInt, review);
                     }
-                }
+                }*/
                 cnt++;
             }
             debugOut.close();
