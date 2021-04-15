@@ -88,4 +88,8 @@ public class CareerWritable implements WritableComparable<CareerWritable> {
         return Integer.compare(hashCode(), o.hashCode());
     }
 
+    @Override
+    public String toString() {
+        return career.ordinal() + "#" + career;
+    }
 }

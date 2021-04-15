@@ -35,47 +35,29 @@ public class Sampler {
         }
     }
 
-    public static class SampleReducer extends Reducer<CareerWritable, ReviewWritable, IntWritable, Text> {
+    public static class SampleReducer extends Reducer<CareerWritable, ReviewWritable, CareerWritable, ReviewWritable> {
         private static final double sampleRate = 0.01;
 
         public void reduce(CareerWritable key, Iterable<ReviewWritable> reviews, Context context)
                 throws IOException, InterruptedException {
             List<ReviewWritable> samples = new ArrayList<>();
             Random random = new Random(Time.getUtcTime());
-            File debugLogFile = new File(String.format("/home/armeria/debug_info_%s.txt", key.getCareer().ordinal()));
-            if (!debugLogFile.exists()) {
-                debugLogFile.createNewFile();
-            }
-            BufferedWriter debugOut = new BufferedWriter(new FileWriter(debugLogFile));
             int cnt = 0;
             int layerSampleNum = (int) (1.0 * key.getCareerDataCount() * sampleRate);
             for (ReviewWritable review : reviews) {
-                debugOut.write(String.format("\n\ncnt = %d  layerSampleNum = %d\n", cnt, layerSampleNum) + review.toString() + "\n");
-                debugOut.flush();
                 if (cnt < layerSampleNum) {
                     samples.add(new ReviewWritable(review.toString()));
                 } else {
                     double randomDouble = random.nextDouble();
-                    debugOut.write(String.format("rDouble = %.2f\n", randomDouble));
                     if (randomDouble < layerSampleNum * 1.0 / (cnt + 1)) {
                         int randomInt = random.nextInt(layerSampleNum);
-                        debugOut.write(String.format("This replace %d-th, rId=%s\n", randomInt, samples.get(randomInt).getReviewId()));
                         samples.set(randomInt, new ReviewWritable(review.toString()));
                     }
                 }
                 cnt++;
             }
-            debugOut.close();
-            debugLogFile = new File(String.format("/home/armeria/real_samples_%s.txt", key.getCareer().ordinal()));
-            if (!debugLogFile.exists()) {
-                debugLogFile.createNewFile();
-            }
-            debugOut = new BufferedWriter(new FileWriter(debugLogFile));
-            for (int i = 0; i < samples.size(); i++) {
-                ReviewWritable sample = samples.get(i);
-                debugOut.write(sample.toString() + "\n");
-                debugOut.flush();
-                context.write(new IntWritable(key.getCareer().ordinal()), new Text(sample.getReviewId()));
+            for (ReviewWritable sample : samples) {
+                context.write(CareerWritable.valueOf(sample.getUserCareer()), sample);
             }
         }
     }
@@ -89,8 +71,8 @@ public class Sampler {
         job.setReducerClass(SampleReducer.class);
         job.setMapOutputKeyClass(CareerWritable.class);
         job.setMapOutputValueClass(ReviewWritable.class);
-        job.setOutputKeyClass(IntWritable.class);
-        job.setOutputValueClass(Text.class);
+        job.setOutputKeyClass(CareerWritable.class);
+        job.setOutputValueClass(ReviewWritable.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
         System.exit(job.waitForCompletion(true) ? 0 : 1);
