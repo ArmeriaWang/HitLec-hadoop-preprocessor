@@ -20,7 +20,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class Sampler {
 
-    private static String debugLogFilePath;
+    private static File debugLogFile;
     private static BufferedWriter debugOut;
 
     public static class ReviewMapper extends Mapper<Object, Text, CareerWritable, ReviewWritable> {
@@ -61,8 +61,11 @@ public class Sampler {
     }
 
     public static void main(String[] args) throws Exception {
-        debugLogFilePath = args[1] + "/debug_info.txt";
-        debugOut = new BufferedWriter(new FileWriter(debugLogFilePath));
+        debugLogFile = new File(args[1] + "/debug_info.txt");
+        if (!debugLogFile.exists()) {
+            debugLogFile.createNewFile();
+        }
+        debugOut = new BufferedWriter(new FileWriter(debugLogFile));
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "Sample by layer (career)");
         job.setJarByClass(Sampler.class);
