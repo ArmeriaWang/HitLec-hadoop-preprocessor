@@ -17,6 +17,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.util.Time;
 
 public class Sampler {
 
@@ -40,7 +41,7 @@ public class Sampler {
         public void reduce(CareerWritable key, Iterable<ReviewWritable> reviews, Context context)
                 throws IOException, InterruptedException {
             List<ReviewWritable> samples = new ArrayList<>();
-            Random random = new Random();
+            Random random = new Random(Time.getUtcTime());
             debugLogFile = new File(String.format("/home/armeria/debug_info_%s.txt", key.getCareer().ordinal()));
             if (!debugLogFile.exists()) {
                 debugLogFile.createNewFile();
@@ -54,7 +55,7 @@ public class Sampler {
                 if (cnt < layerSampleNum) {
                     samples.add(review);
                 } else {
-                    if (Math.random() < layerSampleNum * 1.0 / (cnt + 1)) {
+                    if (random.nextDouble() < layerSampleNum * 1.0 / (cnt + 1)) {
                         samples.set(random.nextInt(layerSampleNum), review);
                     }
                 }
