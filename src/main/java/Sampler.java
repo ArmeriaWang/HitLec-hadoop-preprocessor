@@ -35,12 +35,12 @@ public class Sampler {
     }
 
     public static class SampleReducer extends Reducer<CareerWritable, ReviewWritable, IntWritable, Text> {
-        private final List<ReviewWritable> samples = new ArrayList<>();
-        private final Random random = new Random();
         private static final double sampleRate = 0.01;
 
         public void reduce(CareerWritable key, Iterable<ReviewWritable> reviews, Context context)
                 throws IOException, InterruptedException {
+            List<ReviewWritable> samples = new ArrayList<>();
+            Random random = new Random();
             debugLogFile = new File(String.format("/home/armeria/debug_info_%s.txt", key.getCareer().ordinal()));
             if (!debugLogFile.exists()) {
                 debugLogFile.createNewFile();

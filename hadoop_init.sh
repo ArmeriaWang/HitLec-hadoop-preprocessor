@@ -16,3 +16,4 @@ hadoop jar sampler.jar Sampler /user/armeria/bdclab1/input /user/armeria/bdclab1
 hdfs dfs -cat /user/armeria/bdclab1/output/part-r-00000
 rm -rf ../../../output
 hadoop fs -get /user/armeria/bdclab1/output ../../../
+mv /home/armeria/debug* ../../../output
