@@ -4,3 +4,4 @@ target/
 src/main/resources
 .vscode/
 .settings/
+**.jar

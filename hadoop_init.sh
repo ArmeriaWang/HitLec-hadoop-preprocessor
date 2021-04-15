@@ -11,4 +11,4 @@ fi
 hadoop com.sun.tools.javac.Main -d ./ ./*.java
 jar cf sampler.jar *.class
 hdfs dfs -rm -r /user/armeria/bdclab1/output
-hadoop jar sampler.jar Sampler /user/armeria/bdclab1/ /user/armeria/bdclab1/output
+hadoop jar sampler.jar Sampler /user/armeria/bdclab1/input /user/armeria/bdclab1/output
