@@ -8,6 +8,7 @@ then
     hdfs dfs -mkdir -p /user/armeria/bdclab1/input
     hadoop fs -copyFromLocal ../resources/data.txt /user/armeria/bdclab1/input
 fi
+git pull
 hadoop com.sun.tools.javac.Main -d ./ ./*.java
 jar cf sampler.jar *.class
 hdfs dfs -rm -r /user/armeria/bdclab1/output
