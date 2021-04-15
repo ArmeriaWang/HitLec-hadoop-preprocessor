@@ -1,3 +1,6 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +19,10 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class Sampler {
-    
+
+    private static String debugLogFilePath;
+    private static BufferedWriter debugOut;
+
     public static class ReviewMapper extends Mapper<Object, Text, CareerWritable, ReviewWritable> {
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             StringTokenizer itr = new StringTokenizer(value.toString(), "\n");
@@ -38,7 +44,7 @@ public class Sampler {
             int cnt = 0;
             int layerSampleNum = (int) (1.0 * key.getCareerDataCount() * sampleRate);
             for (ReviewWritable review : reviews) {
-                System.out.println(review.getReviewId());
+                debugOut.write(String.format("cnt = %d  layerSampleNum = %d\n", cnt, layerSampleNum) + review.toString());
                 if (cnt < layerSampleNum) {
                     samples.add(review);
                 } else {
@@ -55,6 +61,8 @@ public class Sampler {
     }
 
     public static void main(String[] args) throws Exception {
+        debugLogFilePath = args[1] + "/debug_info.txt";
+        debugOut = new BufferedWriter(new FileWriter(debugLogFilePath));
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "Sample by layer (career)");
         job.setJarByClass(Sampler.class);

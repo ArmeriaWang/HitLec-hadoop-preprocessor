@@ -73,7 +73,7 @@ public class ReviewWritable implements Writable{
 
     @Override
     public void write(DataOutput out) throws IOException {
-//        Text.writeString(out, rawString);
+        Text.writeString(out, rawString);
         this.reviewId.write(out);
         this.longitude.write(out);
         this.latitude.write(out);
@@ -90,7 +90,7 @@ public class ReviewWritable implements Writable{
 
     @Override
     public void readFields(DataInput in) throws IOException {
-//        this.rawString = Text.readString(in);
+        this.rawString = Text.readString(in);
         this.reviewId.readFields(in);
         this.longitude.readFields(in);
         this.latitude.readFields(in);
