@@ -19,4 +19,5 @@ rm -rf ./output
 hadoop fs -get /user/armeria/bdclab1/output .
 mv /home/armeria/debug* ./output
 mv /home/armeria/real_samples* ./output
-zip -q results_0.zip part-r-00000 debug_info_0.txt read_samples_0.txt
+cd ./output
+zip -q results_0.zip part-r-00000 debug_info_0.txt real_samples_0.txt

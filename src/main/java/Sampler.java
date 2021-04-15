@@ -71,9 +71,11 @@ public class Sampler {
                 debugLogFile.createNewFile();
             }
             debugOut = new BufferedWriter(new FileWriter(debugLogFile));
-            for (ReviewWritable review : samples) {
-                debugOut.write(review.toString() + "\n");
-                context.write(new IntWritable(key.getCareer().ordinal()), new Text(review.getReviewId()));
+            for (int i = 0; i < samples.size(); i++) {
+                ReviewWritable sample = samples.get(i);
+                debugOut.write(sample.toString() + "\n");
+                debugOut.flush();
+                context.write(new IntWritable(key.getCareer().ordinal()), new Text(sample.getReviewId()));
             }
         }
     }
