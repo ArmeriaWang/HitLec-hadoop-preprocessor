@@ -3,10 +3,10 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Objects;
 
-import org.apache.hadoop.io.Writable;
+import org.apache.hadoop.io.WritableComparable;
 
-public class CareerWritable implements Writable {
-    
+public class CareerWritable implements WritableComparable<CareerWritable> {
+
     enum Career {
         PROGRAMMER, TEACHER, WRITER, ACCOUNTANT, MANAGER, DOCTOR, ARTIST, FARMER
     }
@@ -81,4 +81,11 @@ public class CareerWritable implements Writable {
     public int hashCode() {
         return Objects.hash(career);
     }
+
+    @Override
+    public int compareTo(CareerWritable o) {
+        if (this == o) return 0;
+        return Integer.compare(hashCode(), o.hashCode());
+    }
+
 }

@@ -1,6 +1,6 @@
 target/
+.idea
 **.class
 src/main/resources
 .vscode/
 .settings/
-.idea/
