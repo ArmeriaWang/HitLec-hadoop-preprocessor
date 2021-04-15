@@ -61,7 +61,7 @@ public class Sampler {
     }
 
     public static void main(String[] args) throws Exception {
-        debugLogFile = new File(args[1] + "/debug_info.txt");
+        debugLogFile = new File("/user/armeria/debug_info.txt");
         if (!debugLogFile.exists()) {
             debugLogFile.createNewFile();
         }
