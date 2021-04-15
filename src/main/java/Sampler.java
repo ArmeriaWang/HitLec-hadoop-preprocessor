@@ -18,7 +18,7 @@ public class Sampler {
     
     public static class ReviewMapper extends Mapper<Object, Text, CareerWritable, ReviewWritable> {
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-            StringTokenizer itr = new StringTokenizer(value.toString());
+            StringTokenizer itr = new StringTokenizer(value.toString(), "\n");
             while (itr.hasMoreTokens()) {
                 String rawString = itr.nextToken();
                 ReviewWritable review = new ReviewWritable(rawString);
