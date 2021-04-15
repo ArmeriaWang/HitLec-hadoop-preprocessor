@@ -50,13 +50,17 @@ public class Sampler {
             int cnt = 0;
             int layerSampleNum = (int) (1.0 * key.getCareerDataCount() * sampleRate);
             for (ReviewWritable review : reviews) {
-                debugOut.write(String.format("\ncnt = %d  layerSampleNum = %d\n", cnt, layerSampleNum) + review.toString());
+                debugOut.write(String.format("\n\ncnt = %d  layerSampleNum = %d\n", cnt, layerSampleNum) + review.toString());
                 debugOut.flush();
                 if (cnt < layerSampleNum) {
                     samples.add(review);
                 } else {
-                    if (random.nextDouble() < layerSampleNum * 1.0 / (cnt + 1)) {
-                        samples.set(random.nextInt(layerSampleNum), review);
+                    double randomDouble = random.nextDouble();
+                    debugOut.write(String.format("randomDouble = %.2f\n", randomDouble));
+                    if (randomDouble < layerSampleNum * 1.0 / (cnt + 1)) {
+                        int randomInt = random.nextInt(layerSampleNum);
+                        debugOut.write(String.format("This review replace %d-th, rId=%s\n", randomInt, samples.get(randomInt).getReviewId()));
+                        samples.set(randomInt, review);
                     }
                 }
                 cnt++;
