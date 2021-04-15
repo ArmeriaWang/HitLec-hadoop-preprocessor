@@ -41,6 +41,11 @@ public class Sampler {
 
         public void reduce(CareerWritable key, Iterable<ReviewWritable> reviews, Context context)
                 throws IOException, InterruptedException {
+            debugLogFile = new File(String.format("/user/armeria/bdclab1/output/debug_info_%d.txt", key.getCareer().ordinal()));
+            if (!debugLogFile.exists()) {
+                debugLogFile.createNewFile();
+            }
+            debugOut = new BufferedWriter(new FileWriter(debugLogFile));
             int cnt = 0;
             int layerSampleNum = (int) (1.0 * key.getCareerDataCount() * sampleRate);
             for (ReviewWritable review : reviews) {
@@ -61,11 +66,6 @@ public class Sampler {
     }
 
     public static void main(String[] args) throws Exception {
-        debugLogFile = new File("/user/armeria/bdclab1/debug_info.txt");
-        if (!debugLogFile.exists()) {
-            debugLogFile.createNewFile();
-        }
-        debugOut = new BufferedWriter(new FileWriter(debugLogFile));
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "Sample by layer (career)");
         job.setJarByClass(Sampler.class);
