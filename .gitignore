@@ -1,0 +1,5 @@
+target/
+**.class
+src/main/resources
+.vscode/
+.settings/
