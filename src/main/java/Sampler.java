@@ -65,6 +65,7 @@ public class Sampler {
                 }
                 cnt++;
             }
+            debugOut.close();
             debugLogFile = new File(String.format("/home/armeria/real_samples_%s.txt", key.getCareer().ordinal()));
             if (!debugLogFile.exists()) {
                 debugLogFile.createNewFile();
