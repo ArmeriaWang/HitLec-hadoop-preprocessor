@@ -60,6 +60,8 @@ public class Sampler {
         job.setMapperClass(ReviewMapper.class);
         job.setCombinerClass(SampleReducer.class);
         job.setReducerClass(SampleReducer.class);
+        job.setMapOutputKeyClass(CareerWritable.class);
+        job.setOutputValueClass(ReviewWritable.class);
         job.setOutputKeyClass(IntWritable.class);
         job.setOutputValueClass(Text.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
