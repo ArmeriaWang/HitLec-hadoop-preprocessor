@@ -48,7 +48,7 @@ public class Sampler {
                 cnt++;
             }
             for (ReviewWritable review : samples) {
-                context.write(new IntWritable(key.getCareer().ordinal()), new Text(review.getUserId()));
+                context.write(new IntWritable(key.getCareer().ordinal()), new Text(review.getReviewId()));
             }
         }
     }
