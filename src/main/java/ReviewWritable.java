@@ -7,7 +7,8 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 
 public class ReviewWritable implements Writable{
-    private Text reviewId;
+    private final String rawString;
+    private final Text reviewId;
     private DoubleWritable longitude;
     private DoubleWritable latitude;
     private DoubleWritable altitude;
@@ -19,7 +20,6 @@ public class ReviewWritable implements Writable{
     private Text userNationality;
     private CareerWritable userCareer;
     private DoubleWritable userIncome;
-    private String rawString;
 
     /* public Review(String reviewId, double longitude, double latitude, double altitude, String reviewDate,
             String temperature, double rating, String userId, String userBirthday, String userNationality,
@@ -39,6 +39,19 @@ public class ReviewWritable implements Writable{
     } */
 
     public ReviewWritable() {
+        rawString = "";
+        reviewId = new Text();
+        longitude = new DoubleWritable();
+        latitude = new DoubleWritable();
+        altitude = new DoubleWritable();
+        reviewDate = new Text();
+        temperature = new Text();
+        rating = new DoubleWritable();
+        userId = new Text();
+        userBirthday = new Text();
+        userNationality = new Text();
+        userCareer = new CareerWritable();
+        userIncome = new DoubleWritable();
     }
 
     public ReviewWritable(String rawString) {
