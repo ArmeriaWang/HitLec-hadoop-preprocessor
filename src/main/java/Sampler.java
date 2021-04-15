@@ -7,7 +7,6 @@ import java.util.Random;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -29,9 +28,9 @@ public class Sampler {
     }
 
     public static class SampleReducer extends Reducer<CareerWritable, ReviewWritable, CareerWritable, ReviewWritable> {
-        private List<ReviewWritable> samples = new ArrayList<>();
-        private Random random = new Random();
-        private static double sampleRate = 0.01;
+        private final List<ReviewWritable> samples = new ArrayList<>();
+        private final Random random = new Random();
+        private static final double sampleRate = 0.01;
 
         public void reduce(CareerWritable key, Iterable<ReviewWritable> reviews, Context context)
                 throws IOException, InterruptedException {
@@ -41,7 +40,7 @@ public class Sampler {
                 if (cnt < layerSampleNum) {
                     samples.add(review);
                 } else {
-                    if (Math.random() < layerSampleNum / (cnt + 1)) {
+                    if (Math.random() < layerSampleNum * 1.0 / (cnt + 1)) {
                         samples.set(random.nextInt(layerSampleNum), review);
                     }
                 }

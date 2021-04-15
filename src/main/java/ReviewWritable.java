@@ -42,7 +42,7 @@ public class ReviewWritable implements Writable{
     }
 
     public ReviewWritable(String rawString) {
-        String[] elements = rawString.split("|");
+        String[] elements = rawString.split("\\|");
         this.rawString = rawString;
         this.reviewId = new Text(elements[0]);
         this.longitude = new DoubleWritable(Double.parseDouble(elements[1]));

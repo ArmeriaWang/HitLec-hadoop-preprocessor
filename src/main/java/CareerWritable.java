@@ -1,13 +1,14 @@
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.Objects;
 
 import org.apache.hadoop.io.Writable;
 
 public class CareerWritable implements Writable {
     
-    static enum Career {
-        PROGRAMMER, TEACHER, WRITER, ACCOUNTANT, MANAGER, DOCTOR, ARTIST, FARMER;
+    enum Career {
+        PROGRAMMER, TEACHER, WRITER, ACCOUNTANT, MANAGER, DOCTOR, ARTIST, FARMER
     }
 
     private Career career;
@@ -68,4 +69,16 @@ public class CareerWritable implements Writable {
         career = Career.values()[in.readInt()];
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CareerWritable that = (CareerWritable) o;
+        return career == that.career;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(career);
+    }
 }
