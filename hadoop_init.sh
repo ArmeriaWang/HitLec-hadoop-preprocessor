@@ -14,3 +14,5 @@ jar cf sampler.jar *.class
 hdfs dfs -rm -r /user/armeria/bdclab1/output
 hadoop jar sampler.jar Sampler /user/armeria/bdclab1/input /user/armeria/bdclab1/output
 hdfs dfs -cat /user/armeria/bdclab1/output/part-r-00000
+rm -rf ../../../output
+hadoop fs -get /user/armeria/bdclab1/output ../../../
