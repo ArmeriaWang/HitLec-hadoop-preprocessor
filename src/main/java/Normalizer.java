@@ -97,7 +97,6 @@ public class Normalizer {
         Job job = Job.getInstance(conf, "normalize");
         job.setJarByClass(Normalizer.class);
         job.setMapperClass(NormalizeMapper.class);
-//        job.setCombinerClass(SampleReducer.class);
         job.setReducerClass(NormalizeReducer.class);
         job.setMapOutputKeyClass(CareerWritable.class);
         job.setMapOutputValueClass(ReviewWritable.class);
