@@ -74,10 +74,10 @@ if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
     rm -rf ./sampler_output
     hadoop fs -copyToLocal $bdclab1_hpath/sampler_output .
     if [ ! -d "sampler_output" ]; then
-        echo "Sample failed"
+        echo "\033[31mSample failed\033[0m"
         exit
     fi
-    echo -e "\033[32mSample success\033[0m"
+    echo "\033[32mSample success\033[0m"
     # mv /home/armeria/debug* ./sampler_output
     # mv /home/armeria/real_samples* ./sampler_output
     # cd ./sampler_output
@@ -95,7 +95,7 @@ if [ "$run_all" -ge 2 ] || [ "$run_single" -eq 2 ]; then
     hadoop fs -copyToLocal $bdclab1_hpath/filter_output .
     # zip -q results_filter.zip ./filter_output
     if [ ! -d "filter_output" ]; then
-        echo "Filter failed"
+        echo "\033[31mFilter failed\033[0m"
         exit
     fi
     echo "\033[32mFilter success\033[0m"
@@ -111,11 +111,11 @@ if [ "$run_all" -ge 3 ] || [ "$run_single" -eq 3 ]; then
     rm -rf ./minmax_output
     hadoop fs -copyToLocal $bdclab1_hpath/minmax_output .
     if [ ! -d "minmax_output" ]; then
-        echo "MinMax failed"
+        echo "\033[31mMinMax failed\033[0m"
         exit
     fi
     # zip -q results_minmax.zip ./minmax_output
-    echo -e "\033[32mMinMax success\033[0m"
+    echo "\033[32mMinMax success\033[0m"
 fi
 
 if [ "$run_all" -ge 4 ] || [ "$run_single" -eq 4 ]; then
@@ -129,11 +129,11 @@ if [ "$run_all" -ge 4 ] || [ "$run_single" -eq 4 ]; then
     rm -rf ./normalize_output
     hadoop fs -copyToLocal $bdclab1_hpath/normalize_output .
     if [ ! -d "normalize_output" ]; then
-        echo "Normalize failed"
+        echo "\033[31mNormalize failed\033[0m"
         exit
     fi
     # zip -q results_normalize.zip ./normalize_output
-    echo -e "\033[32mNormalize success\033[0m"
+    echo "\033[32mNormalize success\033[0m"
 fi
 
 echo "\033[32mPlan success\033[0m"
