@@ -36,7 +36,6 @@ public class Sampler {
     }
 
     public static class SampleReducer extends Reducer<CareerWritable, ReviewWritable, NullWritable, ReviewWritable> {
-        private static final double sampleRate = 0.01;
 
         @Override
         protected void reduce(CareerWritable key, Iterable<ReviewWritable> reviews, Context context)
