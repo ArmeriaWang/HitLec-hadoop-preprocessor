@@ -61,6 +61,25 @@ public class ReviewWritable implements Writable, Cloneable {
         }
     }
 
+    private static void copyFields(ReviewWritable dest, ReviewWritable src) {
+        dest.reviewId.set(src.getReviewId());
+        dest.longitude.set(src.getLongitude());
+        dest.latitude.set(src.getLatitude());
+        dest.altitude.set(src.getAltitude());
+        dest.reviewDate.set(src.getReviewDate());
+        dest.temperature.set(src.getTemperature());
+        if (!(dest.vacantRating = src.vacantRating)) {
+            dest.rating.set(src.getRating());
+        }
+        dest.userId.set(src.getUserId());
+        dest.userBirthday.set(src.getUserBirthday());
+        dest.userNationality.set(src.getUserNationality());
+        dest.userCareer.setCareer(src.getUserCareer());
+        if (!(dest.vacantUserIncome = src.vacantUserIncome)) {
+            dest.userIncome.set(src.getUserIncome());
+        }
+    }
+
     @Override
     public ReviewWritable clone() {
         try {
@@ -69,7 +88,9 @@ public class ReviewWritable implements Writable, Cloneable {
         catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
-        return new ReviewWritable(toString());
+        ReviewWritable that = new ReviewWritable();
+        copyFields(that, this);
+        return that;
     }
 
     @Override
@@ -80,22 +101,7 @@ public class ReviewWritable implements Writable, Cloneable {
     @Override
     public void readFields(DataInput in) throws IOException {
         ReviewWritable that = new ReviewWritable(Text.readString(in));
-        this.reviewId.set(that.getReviewId());
-        this.longitude.set(that.getLongitude());
-        this.latitude.set(that.getLatitude());
-        this.altitude.set(that.getAltitude());
-        this.reviewDate.set(that.getReviewDate());
-        this.temperature.set(that.getTemperature());
-        if (!(this.vacantRating = that.vacantRating)) {
-            this.rating.set(that.getRating());
-        }
-        this.userId.set(that.getUserId());
-        this.userBirthday.set(that.getUserBirthday());
-        this.userNationality.set(that.getUserNationality());
-        this.userCareer.setCareer(that.getUserCareer());
-        if (!(this.vacantUserIncome = that.vacantUserIncome)) {
-            this.userIncome.set(that.getUserIncome());
-        }
+        copyFields(this, that);
     }
 
     public String getReviewId() {
@@ -175,7 +181,6 @@ public class ReviewWritable implements Writable, Cloneable {
     public void setTemperature(String temperature) {
         this.temperature.set(temperature);
     }
-
 
     @Override
     public String toString() {
