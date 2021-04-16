@@ -2,6 +2,14 @@ project_path="/home/armeria/Work/courses/db_calc/Lab1-1183710106"
 java_source_path=$project_path"/src/main/java"
 bdclab1_hpath="/user/armeria/bdclab1"
 
+echo_usage() {
+    echo "Usage: runner.sh [-i] (-a ROUNDS) | (-s ROUND)"
+        echo "      1 Sample"
+        echo "      2 Filter"
+        echo "      3 MinMax"
+        echo "      4 Normalize"
+}
+
 run_all=0
 run_single=0
 init=0
@@ -17,15 +25,15 @@ while getopts "a:s:i" arg; do
         init=1
         ;;
     ?)
-        echo "Usage: runner.sh [-i] [-a ROUNDS] | [-s ROUND]"
-        echo "      1 Sample"
-        echo "      2 Filter"
-        echo "      3 MinMax"
-        echo "      4 Normalize"
-        exit 1
+        echo_usage
+        exit
         ;;
     esac
 done
+if [ "$init" -eq 0 ] && [ "$run_all" -eq 0 ] && [ "$run_single" -eq 0 ]; then
+    echo_usage
+    exit
+fi
 
 printf "Plan to run: "
 if [ $init -eq 1 ]; then
