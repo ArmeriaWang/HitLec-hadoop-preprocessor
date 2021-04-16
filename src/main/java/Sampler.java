@@ -20,6 +20,7 @@ public class Sampler {
 
 //    private static File debugLogFile;
 //    private static BufferedWriter debugOut;
+    private static double sampleRate;
 
     public static class SampleMapper extends Mapper<Object, Text, CareerWritable, ReviewWritable> {
 
@@ -76,6 +77,7 @@ public class Sampler {
         job.setOutputValueClass(ReviewWritable.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        sampleRate = Double.parseDouble(args[2]);
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 
