@@ -103,7 +103,7 @@ if [ "$run_all" -ge 4 ] || [ "$run_single" -eq 4 ]; then
     cd $java_source_path || exit
     hdfs dfs -rm -r $bdclab1_hpath/normalize_output
     hdfs dfs -cp $bdclab1_hpath/minmax_output/part-r-00000 $bdclab1_hpath/minmax_output/minmax.txt
-    hadoop jar main.jar MinMax $bdclab1_hpath/filter_output $bdclab1_hpath/normalize_output $bdclab1_hpath/minmax_output/minmax.txt
+    hadoop jar main.jar Normalize $bdclab1_hpath/filter_output $bdclab1_hpath/normalize_output $bdclab1_hpath/minmax_output/minmax.txt
     cd $project_path || exit
     rm -rf ./normalize_output
     hadoop fs -copyToLocal $bdclab1_hpath/normalize_output .

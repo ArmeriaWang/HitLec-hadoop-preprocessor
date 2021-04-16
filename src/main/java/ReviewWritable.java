@@ -6,8 +6,7 @@ import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 
-public class ReviewWritable implements Writable{
-    private final Text rawString;
+public class ReviewWritable implements Writable {
     private final Text reviewId;
     private final DoubleWritable longitude;
     private final DoubleWritable latitude;
@@ -39,7 +38,6 @@ public class ReviewWritable implements Writable{
     } */
 
     public ReviewWritable() {
-        rawString = new Text();
         reviewId = new Text();
         longitude = new DoubleWritable();
         latitude = new DoubleWritable();
@@ -56,7 +54,6 @@ public class ReviewWritable implements Writable{
 
     public ReviewWritable(String rawString) {
         String[] elements = rawString.split("\\|");
-        this.rawString = new Text(rawString);
         this.reviewId = new Text(elements[0]);
         this.longitude = new DoubleWritable(Double.parseDouble(elements[1]));
         this.latitude = new DoubleWritable(Double.parseDouble(elements[2]));
@@ -75,15 +72,15 @@ public class ReviewWritable implements Writable{
     public ReviewWritable clone() {
         try {
             super.clone();
-        } catch (CloneNotSupportedException e) {
+        }
+        catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
-        return new ReviewWritable(rawString.toString());
+        return new ReviewWritable(toString());
     }
 
     @Override
     public void write(DataOutput out) throws IOException {
-        this.rawString.write(out);
         this.reviewId.write(out);
         this.longitude.write(out);
         this.latitude.write(out);
@@ -100,7 +97,6 @@ public class ReviewWritable implements Writable{
 
     @Override
     public void readFields(DataInput in) throws IOException {
-        this.rawString.readFields(in);
         this.reviewId.readFields(in);
         this.longitude.readFields(in);
         this.latitude.readFields(in);
@@ -177,7 +173,11 @@ public class ReviewWritable implements Writable{
 
     @Override
     public String toString() {
-        return rawString.toString();
+        return reviewId + "|" + longitude + "|" + latitude + "|" + altitude + "|" +
+                reviewDate + "|" + temperature + "|" + rating + "|" +
+                userId + "|" + userBirthday + "|" + userBirthday + "|" +
+                userNationality + "|" + userCareer.getCareer() + "|" +
+                userIncome;
     }
-    
+
 }
