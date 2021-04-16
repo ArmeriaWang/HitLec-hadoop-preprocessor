@@ -37,6 +37,9 @@ fi
 if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 3 ]; then
     printf "MinMax "
 fi
+if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 3 ]; then
+    printf "Normalize "
+fi
 printf "\n"
 
 cd $java_source_path || exit
