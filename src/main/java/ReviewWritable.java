@@ -6,7 +6,7 @@ import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 
-public class ReviewWritable implements Writable {
+public class ReviewWritable implements Writable, Cloneable {
     private final Text reviewId;
     private final DoubleWritable longitude;
     private final DoubleWritable latitude;
