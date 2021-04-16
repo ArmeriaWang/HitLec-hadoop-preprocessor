@@ -77,7 +77,7 @@ if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
         echo "Sample failed"
         exit
     fi
-    echo -e "\033[32m Sample success \033[0m"
+    echo -e "\033[32mSample success\033[0m"
     # mv /home/armeria/debug* ./sampler_output
     # mv /home/armeria/real_samples* ./sampler_output
     # cd ./sampler_output
@@ -98,7 +98,7 @@ if [ "$run_all" -ge 2 ] || [ "$run_single" -eq 2 ]; then
         echo "Filter failed"
         exit
     fi
-    echo -e "\033[32m Filter success \033[0m"
+    echo "\033[32mFilter success\033[0m"
 fi
 
 if [ "$run_all" -ge 3 ] || [ "$run_single" -eq 3 ]; then
@@ -115,7 +115,7 @@ if [ "$run_all" -ge 3 ] || [ "$run_single" -eq 3 ]; then
         exit
     fi
     # zip -q results_minmax.zip ./minmax_output
-    echo -e "\033[32m MinMax success \033[0m"
+    echo -e "\033[32mMinMax success\033[0m"
 fi
 
 if [ "$run_all" -ge 4 ] || [ "$run_single" -eq 4 ]; then
@@ -133,7 +133,7 @@ if [ "$run_all" -ge 4 ] || [ "$run_single" -eq 4 ]; then
         exit
     fi
     # zip -q results_normalize.zip ./normalize_output
-    echo -e "\033[32m Normalize success \033[0m"
+    echo -e "\033[32mNormalize success\033[0m"
 fi
 
-echo "Plan finished"
+echo "\033[32mPlan success\033[0m"
