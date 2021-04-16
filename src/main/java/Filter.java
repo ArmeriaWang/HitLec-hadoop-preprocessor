@@ -1,28 +1,18 @@
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
-
-import java.util.Random;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.util.Time;
 
-public class Sampler {
+import java.io.*;
+import java.util.StringTokenizer;
 
-//    private static File debugLogFile;
-//    private static BufferedWriter debugOut;
+public class Filter {
 
-    public static class SampleMapper extends Mapper<Object, Text, CareerWritable, ReviewWritable> {
-
+    public static class FilterMapper extends Mapper<Object, Text, CareerWritable, ReviewWritable> {
         @Override
         protected void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             StringTokenizer itr = new StringTokenizer(value.toString(), "\n");
@@ -34,42 +24,33 @@ public class Sampler {
         }
     }
 
-    public static class SampleReducer extends Reducer<CareerWritable, ReviewWritable, NullWritable, ReviewWritable> {
-        private static final double sampleRate = 0.01;
-
+    public static class FilterReducer extends Reducer<CareerWritable, ReviewWritable, CareerWritable, ReviewWritable> {
         @Override
         protected void reduce(CareerWritable key, Iterable<ReviewWritable> reviews, Context context)
                 throws IOException, InterruptedException {
-            List<ReviewWritable> samples = new ArrayList<>();
-            Random random = new Random(Time.getUtcTime());
-            int cnt = 0;
-            int layerSampleNum = (int) (1.0 * key.getCareerDataCount() * sampleRate);
             for (ReviewWritable review : reviews) {
-                if (cnt < layerSampleNum) {
-                    samples.add(new ReviewWritable(review.toString()));
+                if (isLegalLatitude(review.getLatitude()) && isLegalLongitude((review.getLongitude()))) {
+                    context.write(key, review);
                 }
-                else {
-                    double randomDouble = random.nextDouble();
-                    if (randomDouble < layerSampleNum * 1.0 / (cnt + 1)) {
-                        int randomInt = random.nextInt(layerSampleNum);
-                        samples.set(randomInt, new ReviewWritable(review.toString()));
-                    }
-                }
-                cnt++;
-            }
-            for (ReviewWritable sample : samples) {
-                context.write(NullWritable.get(), sample);
             }
         }
     }
 
+    private static boolean isLegalLongitude(double longitude) {
+        return longitude >= 8.1461259 && longitude <= 11.1993265;
+    }
+
+    private static boolean isLegalLatitude(double latitude) {
+        return latitude >= 56.5824856 && latitude <= 57.750511;
+    }
+
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf, "sample");
-        job.setJarByClass(Sampler.class);
-        job.setMapperClass(SampleMapper.class);
+        Job job = Job.getInstance(conf, "filter");
+        job.setJarByClass(Filter.class);
+        job.setMapperClass(FilterMapper.class);
 //        job.setCombinerClass(SampleReducer.class);
-        job.setReducerClass(SampleReducer.class);
+        job.setReducerClass(FilterReducer.class);
         job.setMapOutputKeyClass(CareerWritable.class);
         job.setMapOutputValueClass(ReviewWritable.class);
         job.setOutputKeyClass(CareerWritable.class);
