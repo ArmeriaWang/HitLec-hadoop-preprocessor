@@ -60,6 +60,8 @@ public class Normalizer {
                 reviewOut.setUserBirthday(normalizeDate(review.getUserBirthday()));
                 context.write(NullWritable.get(), reviewOut);
             }
+            System.out.println(" ============================== ");
+            System.out.println(minRating + ", " + maxRating);
         }
 
         private static double normalizeRating(double rating) {
