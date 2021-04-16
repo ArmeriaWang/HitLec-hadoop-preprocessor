@@ -34,10 +34,10 @@ fi
 if [ "$run_all" -ge 2 ] || [ "$run_single" -eq 2 ]; then
     printf "Filter "
 fi
-if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 3 ]; then
+if [ "$run_all" -ge 3 ] || [ "$run_single" -eq 3 ]; then
     printf "MinMax "
 fi
-if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 3 ]; then
+if [ "$run_all" -ge 4 ] || [ "$run_single" -eq 4 ]; then
     printf "Normalize "
 fi
 printf "\n"
