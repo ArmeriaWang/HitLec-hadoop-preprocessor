@@ -175,9 +175,8 @@ public class ReviewWritable implements Writable, Cloneable {
     public String toString() {
         return reviewId + "|" + longitude + "|" + latitude + "|" + altitude + "|" +
                 reviewDate + "|" + temperature + "|" + rating + "|" +
-                userId + "|" + userBirthday + "|" + userBirthday + "|" +
-                userNationality + "|" + userCareer.getCareer() + "|" +
-                userIncome;
+                userId + "|" + userBirthday + "|" + userNationality + "|" +
+                userCareer.getCareer().toString() + "|" + userIncome;
     }
 
 }
