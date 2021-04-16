@@ -75,7 +75,7 @@ public class Normalizer {
             } else if (dateString.contains("-")) {
                 return dateString;
             } else {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d,yyyy", Locale.ENGLISH);
                 LocalDate date = LocalDate.parse(dateString, formatter);
                 return date.toString();
             }
