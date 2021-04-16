@@ -29,7 +29,7 @@ public class MinMax {
     }
 
     public static class MinMaxReducer extends Reducer<DoubleWritable, NullWritable, DoubleWritable, NullWritable> {
-        private double minRating = Double.MIN_VALUE;
+        private double minRating = Double.MAX_VALUE;
         private double maxRating = Double.MIN_VALUE;
 
         @Override
