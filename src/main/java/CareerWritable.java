@@ -59,6 +59,10 @@ public class CareerWritable implements WritableComparable<CareerWritable> {
         }
     }
 
+    public void setCareer(Career career) {
+        this.career = career;
+    }
+
     @Override
     public void write(DataOutput out) throws IOException {
         out.writeInt(career.ordinal());

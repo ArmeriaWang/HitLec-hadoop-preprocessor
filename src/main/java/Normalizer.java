@@ -55,7 +55,9 @@ public class Normalizer {
                 throws IOException, InterruptedException {
             for (ReviewWritable review : reviews) {
                 ReviewWritable reviewOut = review.clone();
-                reviewOut.setRating(normalizeRating(review.getRating()));
+                if (!reviewOut.isVacantRating()) {
+                    reviewOut.setRating(normalizeRating(review.getRating()));
+                }
                 reviewOut.setReviewDate(normalizeDate(review.getReviewDate()));
                 reviewOut.setUserBirthday(normalizeDate(review.getUserBirthday()));
                 reviewOut.setTemperature(normalizeTemperature(review.getTemperature()));

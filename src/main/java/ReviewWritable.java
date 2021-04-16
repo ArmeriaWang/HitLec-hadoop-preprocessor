@@ -19,23 +19,8 @@ public class ReviewWritable implements Writable, Cloneable {
     private final Text userNationality;
     private final CareerWritable userCareer;
     private final DoubleWritable userIncome;
-
-    /* public Review(String reviewId, double longitude, double latitude, double altitude, String reviewDate,
-            String temperature, double rating, String userId, String userBirthday, String userNationality,
-            Career userCareer, double userIncome) {
-        this.reviewId = reviewId;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.altitude = altitude;
-        this.reviewDate = reviewDate;
-        this.temperature = temperature;
-        this.rating = rating;
-        this.userId = userId;
-        this.userBirthday = userBirthday;
-        this.userNationality = userNationality;
-        this.userCareer = userCareer;
-        this.userIncome = userIncome;
-    } */
+    private boolean vacantRating;
+    private boolean vacantUserIncome;
 
     public ReviewWritable() {
         reviewId = new Text();
@@ -50,6 +35,8 @@ public class ReviewWritable implements Writable, Cloneable {
         userNationality = new Text();
         userCareer = new CareerWritable();
         userIncome = new DoubleWritable();
+        vacantRating = true;
+        vacantUserIncome = true;
     }
 
     public ReviewWritable(String rawString) {
@@ -60,12 +47,18 @@ public class ReviewWritable implements Writable, Cloneable {
         this.altitude = new DoubleWritable(Double.parseDouble(elements[3]));
         this.reviewDate = new Text(elements[4]);
         this.temperature = new Text(elements[5]);
-        this.rating = new DoubleWritable(elements[6].equals("?") ? -1.0 : Double.parseDouble(elements[6]));
+        this.rating = new DoubleWritable();
+        if (!(vacantRating = elements[6].equals("?"))) {
+            this.rating.set(Double.parseDouble(elements[6]));
+        }
         this.userId = new Text(elements[7]);
         this.userBirthday = new Text(elements[8]);
         this.userNationality = new Text(elements[9]);
         this.userCareer = CareerWritable.valueOf(elements[10].toUpperCase());
-        this.userIncome = new DoubleWritable(elements[11].equals("?") ? -1.0 : Double.parseDouble(elements[11]));
+        this.userIncome = new DoubleWritable();
+        if (!(vacantUserIncome = elements[11].equals("?"))) {
+            this.userIncome.set(Double.parseDouble(elements[11]));
+        }
     }
 
     @Override
@@ -81,34 +74,28 @@ public class ReviewWritable implements Writable, Cloneable {
 
     @Override
     public void write(DataOutput out) throws IOException {
-        this.reviewId.write(out);
-        this.longitude.write(out);
-        this.latitude.write(out);
-        this.altitude.write(out);
-        this.reviewDate.write(out);
-        this.temperature.write(out);
-        this.rating.write(out);
-        this.userId.write(out);
-        this.userBirthday.write(out);
-        this.userNationality.write(out);
-        this.userCareer.write(out);
-        this.userIncome.write(out);
+        Text.writeString(out, toString());
     }
 
     @Override
     public void readFields(DataInput in) throws IOException {
-        this.reviewId.readFields(in);
-        this.longitude.readFields(in);
-        this.latitude.readFields(in);
-        this.altitude.readFields(in);
-        this.reviewDate.readFields(in);
-        this.temperature.readFields(in);
-        this.rating.readFields(in);
-        this.userId.readFields(in);
-        this.userBirthday.readFields(in);
-        this.userNationality.readFields(in);
-        this.userCareer.readFields(in);
-        this.userIncome.readFields(in);
+        ReviewWritable that = new ReviewWritable(Text.readString(in));
+        this.reviewId.set(that.getReviewId());
+        this.longitude.set(that.getLongitude());
+        this.latitude.set(that.getLatitude());
+        this.altitude.set(that.getAltitude());
+        this.reviewDate.set(that.getReviewDate());
+        this.temperature.set(that.getTemperature());
+        if (!(this.vacantRating = that.vacantRating)) {
+            this.rating.set(that.getRating());
+        }
+        this.userId.set(that.getUserId());
+        this.userBirthday.set(that.getUserBirthday());
+        this.userNationality.set(that.getUserNationality());
+        this.userCareer.setCareer(that.getUserCareer());
+        if (!(this.vacantUserIncome = that.vacantUserIncome)) {
+            this.userIncome.set(that.getUserIncome());
+        }
     }
 
     public String getReviewId() {
@@ -135,10 +122,6 @@ public class ReviewWritable implements Writable, Cloneable {
         return temperature.toString();
     }
 
-    public double getRating() {
-        return rating.get();
-    }
-
     public String getUserId() {
         return userId.toString();
     }
@@ -155,8 +138,26 @@ public class ReviewWritable implements Writable, Cloneable {
         return userCareer.getCareer();
     }
 
+    public double getRating() {
+        if (vacantRating) {
+            throw new RuntimeException("Visiting the rating of an review instance with vacant rating");
+        }
+        return rating.get();
+    }
+
     public double getUserIncome() {
+        if (vacantUserIncome) {
+            throw new RuntimeException("Visiting the userIncome of an review instance with vacant userIncome");
+        }
         return userIncome.get();
+    }
+
+    public boolean isVacantRating() {
+        return vacantRating;
+    }
+
+    public boolean isVacantUserIncome() {
+        return vacantUserIncome;
     }
 
     public void setRating(double rating) {
@@ -175,12 +176,15 @@ public class ReviewWritable implements Writable, Cloneable {
         this.temperature.set(temperature);
     }
 
+
     @Override
     public String toString() {
+        String ratingString = vacantRating ? "?" : String.format("%.6f", rating.get());
+        String userIncomeString = vacantUserIncome ? "?" : String.format("%.1f", userIncome.get());
         return reviewId + "|" + longitude + "|" + latitude + "|" + altitude + "|" +
-                reviewDate + "|" + temperature + "|" + String.format("%.6f", rating.get()) + "|" +
+                reviewDate + "|" + temperature + "|" + ratingString + "|" +
                 userId + "|" + userBirthday + "|" + userNationality + "|" +
-                userCareer.getCareer().toString() + "|" + userIncome;
+                userCareer.getCareer().toString() + "|" + userIncomeString;
     }
 
 }

@@ -21,7 +21,9 @@ public class MinMax {
             while (itr.hasMoreTokens()) {
                 String rawString = itr.nextToken();
                 ReviewWritable review = new ReviewWritable(rawString);
-                context.write(new DoubleWritable(review.getRating()), NullWritable.get());
+                if (!review.isVacantRating()) {
+                    context.write(new DoubleWritable(review.getRating()), NullWritable.get());
+                }
             }
         }
     }
