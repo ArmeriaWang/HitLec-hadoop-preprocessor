@@ -73,5 +73,16 @@ if [ "$run_all" -ge 2 ] || [ "$run_single" -eq 2 ]; then
     cd $project_path || exit
     rm -rf ./filter_output
     hadoop fs -copyToLocal /user/armeria/bdclab1/filter_output .
-    zip -q results_sam_fil.zip ./sampler_output ./filter_output
+    zip -q results_filter.zip ./filter_output
+fi
+
+if [ "$run_all" -ge 3 ] || [ "$run_single" -eq 3 ]; then
+    # Prepare and run 3rd run_all]: minmax
+    cd $java_source_path || exit
+    hdfs dfs -rm -r /user/armeria/bdclab1/minmax_output
+    hadoop jar main.jar MinMax /user/armeria/bdclab1/filter_output /user/armeria/bdclab1/minmax_output
+    cd $project_path || exit
+    rm -rf ./minmax_output
+    hadoop fs -copyToLocal /user/armeria/bdclab1/minmax_output .
+    zip -q results_minmax.zip ./minmax_output
 fi
