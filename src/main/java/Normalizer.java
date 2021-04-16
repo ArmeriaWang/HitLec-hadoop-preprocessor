@@ -58,14 +58,13 @@ public class Normalizer {
                 reviewOut.setRating(normalizeRating(review.getRating()));
                 reviewOut.setReviewDate(normalizeDate(review.getReviewDate()));
                 reviewOut.setUserBirthday(normalizeDate(review.getUserBirthday()));
+                reviewOut.setTemperature(normalizeTemperature(review.getTemperature()));
                 context.write(NullWritable.get(), reviewOut);
             }
-            System.out.println(" ============================== ");
-            System.out.println(minRating + ", " + maxRating);
         }
 
         private static double normalizeRating(double rating) {
-            if (maxRating - minRating < 1e9) {
+            if (maxRating - minRating < 1e-9) {
                 return 0;
             }
             return (rating - minRating) / (maxRating - minRating);
@@ -80,6 +79,15 @@ public class Normalizer {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d,yyyy", Locale.ENGLISH);
                 LocalDate date = LocalDate.parse(dateString, formatter);
                 return date.toString();
+            }
+        }
+
+        private static String normalizeTemperature(String temperature) {
+            if (temperature.endsWith("℉")) {
+                double temp = Double.parseDouble(temperature.substring(0, temperature.length() - 1));
+                return String.format("%.1f℃", (temp - 32) / 1.8);
+            } else {
+                return temperature;
             }
         }
     }

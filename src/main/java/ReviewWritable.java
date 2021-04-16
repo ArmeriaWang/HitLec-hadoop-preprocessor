@@ -171,6 +171,10 @@ public class ReviewWritable implements Writable, Cloneable {
         this.userBirthday.set(userBirthday);
     }
 
+    public void setTemperature(String temperature) {
+        this.temperature.set(temperature);
+    }
+
     @Override
     public String toString() {
         return reviewId + "|" + longitude + "|" + latitude + "|" + altitude + "|" +
