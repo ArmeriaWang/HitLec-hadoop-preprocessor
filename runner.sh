@@ -67,7 +67,7 @@ if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
     cd $project_path || exit
     rm -rf ./sampler_output
     hadoop fs -copyToLocal $bdclab1_hpath/sampler_output .
-    echo "Sample success"
+    echo "Sample finished"
 # mv /home/armeria/debug* ./sampler_output
 # mv /home/armeria/real_samples* ./sampler_output
 # cd ./sampler_output
@@ -83,7 +83,7 @@ if [ "$run_all" -ge 2 ] || [ "$run_single" -eq 2 ]; then
     rm -rf ./filter_output
     hadoop fs -copyToLocal $bdclab1_hpath/filter_output .
     zip -q results_filter.zip ./filter_output
-    echo "Filter success"
+    echo "Filter finished"
 fi
 
 if [ "$run_all" -ge 3 ] || [ "$run_single" -eq 3 ]; then
@@ -95,7 +95,7 @@ if [ "$run_all" -ge 3 ] || [ "$run_single" -eq 3 ]; then
     rm -rf ./minmax_output
     hadoop fs -copyToLocal $bdclab1_hpath/minmax_output .
     zip -q results_minmax.zip ./minmax_output
-    echo "MinMax success"
+    echo "MinMax finished"
 fi
 
 if [ "$run_all" -ge 4 ] || [ "$run_single" -eq 4 ]; then
@@ -103,10 +103,10 @@ if [ "$run_all" -ge 4 ] || [ "$run_single" -eq 4 ]; then
     cd $java_source_path || exit
     hdfs dfs -rm -r $bdclab1_hpath/normalize_output
     hdfs dfs -cp $bdclab1_hpath/minmax_output/part-r-00000 $bdclab1_hpath/minmax_output/minmax.txt
-    hadoop jar main.jar Normalize $bdclab1_hpath/filter_output $bdclab1_hpath/normalize_output $bdclab1_hpath/minmax_output/minmax.txt
+    hadoop jar main.jar Normalizer $bdclab1_hpath/filter_output $bdclab1_hpath/normalize_output $bdclab1_hpath/minmax_output/minmax.txt
     cd $project_path || exit
     rm -rf ./normalize_output
     hadoop fs -copyToLocal $bdclab1_hpath/normalize_output .
     zip -q results_normalize.zip ./normalize_output
-    echo "Normalize success"
+    echo "Normalize finished"
 fi
