@@ -54,6 +54,8 @@ if [ $init -eq 1 ]; then
     hdfs dfs -mkdir -p $bdclab1_hpath/input
     hadoop fs -copyFromLocal ../resources/data.txt $bdclab1_hpath/input
 fi
+
+echo "Synchronizing from git..."
 git pull
 
 # Compile .java files
@@ -75,7 +77,7 @@ if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
         echo "Sample failed"
         exit
     fi
-    echo "Sample success"
+    echo -e "\033[32m Sample success \033[0m"
     # mv /home/armeria/debug* ./sampler_output
     # mv /home/armeria/real_samples* ./sampler_output
     # cd ./sampler_output
@@ -96,7 +98,7 @@ if [ "$run_all" -ge 2 ] || [ "$run_single" -eq 2 ]; then
         echo "Filter failed"
         exit
     fi
-    echo "Filter success"
+    echo -e "\033[32m Filter success \033[0m"
 fi
 
 if [ "$run_all" -ge 3 ] || [ "$run_single" -eq 3 ]; then
@@ -113,7 +115,7 @@ if [ "$run_all" -ge 3 ] || [ "$run_single" -eq 3 ]; then
         exit
     fi
     # zip -q results_minmax.zip ./minmax_output
-    echo "MinMax success"
+    echo -e "\033[32m MinMax success \033[0m"
 fi
 
 if [ "$run_all" -ge 4 ] || [ "$run_single" -eq 4 ]; then
@@ -131,7 +133,7 @@ if [ "$run_all" -ge 4 ] || [ "$run_single" -eq 4 ]; then
         exit
     fi
     # zip -q results_normalize.zip ./normalize_output
-    echo "Normalize success"
+    echo -e "\033[32m Normalize success \033[0m"
 fi
 
 echo "Plan finished"
