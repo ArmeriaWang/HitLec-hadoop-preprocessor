@@ -24,13 +24,13 @@ done
 
 printf "Plan to run: "
 if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
-    printf "Sampler"
+    printf "Sampler "
 fi
 if [ "$run_all" -ge 2 ] || [ "$run_single" -eq 2 ]; then
-    printf ", Filter"
+    printf "Filter "
 fi
 if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 3 ]; then
-    printf ", MinMax"
+    printf "MinMax "
 fi
 printf "\n"
 
