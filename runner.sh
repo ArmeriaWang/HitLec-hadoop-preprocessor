@@ -1,6 +1,6 @@
 project_path="/home/armeria/Work/courses/db_calc/Lab1-1183710106"
 java_source_path=$project_path"/src/main/java"
-bdclab1_hpath="user/armeria/bdclab1"
+bdclab1_hpath="/user/armeria/bdclab1"
 
 run_all=0
 run_single=0
