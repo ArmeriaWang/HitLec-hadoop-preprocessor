@@ -50,7 +50,6 @@ public class Filter {
         Job job = Job.getInstance(conf, "filter");
         job.setJarByClass(Filter.class);
         job.setMapperClass(FilterMapper.class);
-//        job.setCombinerClass(SampleReducer.class);
         job.setReducerClass(FilterReducer.class);
         job.setMapOutputKeyClass(CareerWritable.class);
         job.setMapOutputValueClass(ReviewWritable.class);

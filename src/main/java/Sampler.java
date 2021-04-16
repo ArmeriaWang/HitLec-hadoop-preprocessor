@@ -68,7 +68,6 @@ public class Sampler {
         Job job = Job.getInstance(conf, "sample");
         job.setJarByClass(Sampler.class);
         job.setMapperClass(SampleMapper.class);
-//        job.setCombinerClass(SampleReducer.class);
         job.setReducerClass(SampleReducer.class);
         job.setMapOutputKeyClass(CareerWritable.class);
         job.setMapOutputValueClass(ReviewWritable.class);
