@@ -6,3 +6,4 @@ src/main/resources
 .settings/
 **.jar
 *output/
+**.zip
