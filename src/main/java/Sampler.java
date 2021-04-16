@@ -46,13 +46,13 @@ public class Sampler {
             int layerSampleNum = (int) (1.0 * key.getCareerDataCount() * sampleRate);
             for (ReviewWritable review : reviews) {
                 if (cnt < layerSampleNum) {
-                    samples.add(new ReviewWritable(review.toString()));
+                    samples.add(review.clone());
                 }
                 else {
                     double randomDouble = random.nextDouble();
                     if (randomDouble < layerSampleNum * 1.0 / (cnt + 1)) {
                         int randomInt = random.nextInt(layerSampleNum);
-                        samples.set(randomInt, new ReviewWritable(review.toString()));
+                        samples.set(randomInt, review.clone());
                     }
                 }
                 cnt++;

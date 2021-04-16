@@ -1,6 +1,7 @@
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -10,6 +11,9 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.StringTokenizer;
 
 public class Normalizer {
@@ -29,30 +33,53 @@ public class Normalizer {
         }
     }
 
-    public static class NormalizeReducer extends Reducer<CareerWritable, ReviewWritable, CareerWritable, ReviewWritable> {
+    public static class NormalizeReducer extends Reducer<CareerWritable, ReviewWritable, NullWritable, ReviewWritable> {
+
+        private static double minRating;
+        private static double maxRating;
+
+        @Override
+        protected void setup(Context context) throws IOException, InterruptedException {
+            InputStream in = minMaxFileSystem.open(minMaxHPath);
+            InputStreamReader inputStreamReader = new InputStreamReader(in, StandardCharsets.UTF_8);
+            BufferedReader minMaxReader = new BufferedReader(inputStreamReader);
+            String line = minMaxReader.readLine();
+            minRating = Double.parseDouble(line);
+            line = minMaxReader.readLine();
+            maxRating = Double.parseDouble(line);
+            super.setup(context);
+        }
+
         @Override
         protected void reduce(CareerWritable key, Iterable<ReviewWritable> reviews, Context context)
-                throws IOException {
-            BufferedReader minMaxReader = getMinMaxBufferedReader();
-            String line = minMaxReader.readLine();
-            String[] numbersStrings = line.split(" ");
-            double minRating = Double.parseDouble(numbersStrings[0]);
-            double maxRating = Double.parseDouble(numbersStrings[1]);
+                throws IOException, InterruptedException {
+            for (ReviewWritable review : reviews) {
+                ReviewWritable reviewOut = review.clone();
+                reviewOut.setRating(normalizeRating(review.getRating()));
+                reviewOut.setReviewDate(normalizeDate(review.getReviewDate()));
+                reviewOut.setUserBirthday(normalizeDate(review.getUserBirthday()));
+                context.write(NullWritable.get(), reviewOut);
+            }
         }
-    }
 
-    private static boolean isLegalLongitude(double longitude) {
-        return longitude >= 8.1461259 && longitude <= 11.1993265;
-    }
+        private static double normalizeRating(double rating) {
+            if (maxRating - minRating < 1e9) {
+                return 0;
+            }
+            return (rating - minRating) / (maxRating - minRating);
+        }
 
-    private static boolean isLegalLatitude(double latitude) {
-        return latitude >= 56.5824856 && latitude <= 57.750511;
-    }
-
-    private static BufferedReader getMinMaxBufferedReader() throws IOException {
-        InputStream in = minMaxFileSystem.open(minMaxHPath);
-        InputStreamReader minMaxHFile = new InputStreamReader(in, StandardCharsets.UTF_8);
-        return new BufferedReader(minMaxHFile);
+        private static String normalizeDate(String dateString) {
+            if (dateString.contains("/")) {
+                return dateString.replaceAll("/", "-");
+            } else if (dateString.contains("-")) {
+                return dateString;
+            } else {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH);
+                LocalDate date = LocalDate.parse(dateString, formatter);
+                return date.toString();
+            }
+        }
     }
 
     public static void main(String[] args) throws Exception {

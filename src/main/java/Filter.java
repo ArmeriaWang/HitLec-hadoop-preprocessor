@@ -13,25 +13,25 @@ import java.util.StringTokenizer;
 
 public class Filter {
 
-    public static class FilterMapper extends Mapper<Object, Text, NullWritable, ReviewWritable> {
+    public static class FilterMapper extends Mapper<Object, Text, CareerWritable, ReviewWritable> {
         @Override
         protected void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             StringTokenizer itr = new StringTokenizer(value.toString(), "\n");
             while (itr.hasMoreTokens()) {
                 String rawString = itr.nextToken();
                 ReviewWritable review = new ReviewWritable(rawString);
-                context.write(NullWritable.get(), review);
+                context.write(CareerWritable.valueOf(review.getUserCareer()), review);
             }
         }
     }
 
-    public static class FilterReducer extends Reducer<NullWritable, ReviewWritable, NullWritable, ReviewWritable> {
+    public static class FilterReducer extends Reducer<CareerWritable, ReviewWritable, NullWritable, ReviewWritable> {
         @Override
-        protected void reduce(NullWritable key, Iterable<ReviewWritable> reviews, Context context)
+        protected void reduce(CareerWritable key, Iterable<ReviewWritable> reviews, Context context)
                 throws IOException, InterruptedException {
             for (ReviewWritable review : reviews) {
                 if (isLegalLatitude(review.getLatitude()) && isLegalLongitude((review.getLongitude()))) {
-                    context.write(key, review);
+                    context.write(NullWritable.get(), review);
                 }
             }
         }
@@ -52,7 +52,7 @@ public class Filter {
         job.setMapperClass(FilterMapper.class);
 //        job.setCombinerClass(SampleReducer.class);
         job.setReducerClass(FilterReducer.class);
-        job.setMapOutputKeyClass(NullWritable.class);
+        job.setMapOutputKeyClass(CareerWritable.class);
         job.setMapOutputValueClass(ReviewWritable.class);
         job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(ReviewWritable.class);

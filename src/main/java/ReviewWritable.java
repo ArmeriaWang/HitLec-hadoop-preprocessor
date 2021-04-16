@@ -72,6 +72,16 @@ public class ReviewWritable implements Writable{
     }
 
     @Override
+    public ReviewWritable clone() {
+        try {
+            super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return new ReviewWritable(rawString.toString());
+    }
+
+    @Override
     public void write(DataOutput out) throws IOException {
         this.rawString.write(out);
         this.reviewId.write(out);
@@ -151,6 +161,18 @@ public class ReviewWritable implements Writable{
 
     public double getUserIncome() {
         return userIncome.get();
+    }
+
+    public void setRating(double rating) {
+        this.rating.set(rating);
+    }
+
+    public void setReviewDate(String reviewDate) {
+        this.reviewDate.set(reviewDate);
+    }
+
+    public void setUserBirthday(String userBirthday) {
+        this.userBirthday.set(userBirthday);
     }
 
     @Override
