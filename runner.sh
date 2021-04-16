@@ -18,7 +18,7 @@ while getopts "r:i" arg; do
     esac
 done
 
-cd java_source_path || exit
+cd $java_source_path || exit
 if [ $init -eq 1 ]; then
     stop-dfs.sh
     rm -rf /home/armeria/Applications/hadoop-3.3.0/tmp
