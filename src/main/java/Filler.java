@@ -24,9 +24,7 @@ public class Filler {
             while (itr.hasMoreTokens()) {
                 String rawString = itr.nextToken();
                 ReviewWritable review = new ReviewWritable(rawString);
-                if (!review.isVacantRating()) {
-                    context.write(new IntWritable(random.nextInt()), review);
-                }
+                context.write(new IntWritable(random.nextInt()), review);
             }
         }
     }
@@ -56,7 +54,6 @@ public class Filler {
                     continue;
                 } else if (review.isVacantRating()) {
                     vacantRatingReviews.add(review.clone());
-                    System.out.println("reduce========== " + vacantRatingReviews.size() + " ===============\n");
                     continue;
                 }
                 context.write(NullWritable.get(), review);
@@ -70,7 +67,6 @@ public class Filler {
 
         @Override
         protected void cleanup(Context context) throws IOException, InterruptedException {
-            System.out.println("cleanup========== " + vacantRatingReviews.size() + " ===============\n");
             for (ReviewWritable review : vacantRatingReviews) {
                 double[] x = getParameters(review);
                 review.setRating(getProduct(x, w));
