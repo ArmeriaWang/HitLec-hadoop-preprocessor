@@ -9,6 +9,9 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Random;
@@ -34,9 +37,15 @@ public class Filler {
         private final double[] w = new double[len];
         private final double learningRate = 0.0001;
         private final Set<ReviewWritable> vacantRatingReviews = new HashSet<>();
+        private static FileWriter debugOut;
 
         @Override
-        protected void setup(Context context) {
+        protected void setup(Context context) throws IOException {
+            File debugFile = new File("/home/armeria/debug_filler_0.txt");
+            if (!debugFile.exists()) {
+                debugFile.createNewFile();
+            }
+            debugOut = new FileWriter(debugFile);
             for (int i = 0; i < len; i++) {
                 w[i] = Math.random();
             }
@@ -59,7 +68,8 @@ public class Filler {
                 context.write(NullWritable.get(), review);
                 double[] x = getParameters(review);
                 double delta = review.getRating() - getProduct(x, wPre);
-                System.out.println("reduce =============== " + delta + " =================\n");
+                if (key.get() % 100 == 7)
+                    debugOut.write(String.format("reduce :: %.3f %.3f %.3f\n", review.getRating(), getProduct(x, wPre), delta));
                 for (int j = 0; j < len; j++) {
                     w[j] = w[j] + learningRate * delta * x[j];
                 }
