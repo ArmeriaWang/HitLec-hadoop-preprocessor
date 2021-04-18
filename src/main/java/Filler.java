@@ -1,3 +1,5 @@
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -9,14 +11,8 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Filler {
     public static class FillerMapper extends Mapper<Object, Text, IntWritable, ReviewWritable> {
@@ -37,19 +33,27 @@ public class Filler {
         private final double[] w = new double[len];
         private final double learningRate = 0.00001;
         private final Set<ReviewWritable> vacantRatingReviews = new HashSet<>();
-        private static FileWriter debugOut;
+        private final Set<ReviewWritable> vacantUserIncomeReviews = new HashSet<>();
+        private final Map<Pair<String, CareerWritable.Career>, Pair<Double, Integer>> userIncomeStats = new HashMap<>();
+        private double incomeSumAll;
+        private int incomeStatsCnt;
+//        private static FileWriter debugOut;
 
         @Override
         protected void setup(Context context) throws IOException {
-            File debugFile = new File("/home/armeria/debug_filler_0.txt");
-            if (!debugFile.exists()) {
-                debugFile.createNewFile();
-            }
-            debugOut = new FileWriter(debugFile);
+//            File debugFile = new File("/home/armeria/debug_filler_0.txt");
+//            if (!debugFile.exists()) {
+//                debugFile.createNewFile();
+//            }
+//            debugOut = new FileWriter(debugFile);
             for (int i = 0; i < len; i++) {
                 w[i] = Math.random() * 0.1;
             }
+            incomeSumAll = 0.0;
+            incomeStatsCnt = 0;
+            vacantUserIncomeReviews.clear();
             vacantRatingReviews.clear();
+            userIncomeStats.clear();
         }
 
         @Override
@@ -59,18 +63,27 @@ public class Filler {
             for (ReviewWritable review : reviews) {
                 System.arraycopy(w, 0, wPre, 0, 4);
                 if (review.isVacantUserIncome()) {
-                    context.write(NullWritable.get(), review);
+                    vacantUserIncomeReviews.add(review.clone());
                     continue;
                 } else if (review.isVacantRating()) {
                     vacantRatingReviews.add(review.clone());
                     continue;
                 }
+                Pair<String, CareerWritable.Career> nationalityCareer =
+                        new ImmutablePair<>(review.getUserNationality(), review.getUserCareer());
+                Pair<Double, Integer> originalStats =
+                        userIncomeStats.getOrDefault(nationalityCareer, new ImmutablePair<>(0.0, 0));
+                userIncomeStats.put(nationalityCareer,
+                        new ImmutablePair<>(originalStats.getLeft() + review.getUserIncome(),
+                                originalStats.getRight() + 1));
                 context.write(NullWritable.get(), review);
                 double[] x = getParameters(review);
                 double delta = review.getRating() - getProduct(x, wPre);
-                debugOut.write(String.format("reduce :: %.3f %.3f %.3f\n\tw=%s\tx=%s\n",
-                        review.getRating(), getProduct(x, wPre), delta, vector2String(w), vector2String(x)));
-                debugOut.flush();
+                incomeSumAll += review.getUserIncome();
+                incomeStatsCnt++;
+//                debugOut.write(String.format("reduce :: %.3f %.3f %.3f\n\tw=%s\tx=%s\n",
+//                        review.getRating(), getProduct(x, wPre), delta, vector2String(w), vector2String(x)));
+//                debugOut.flush();
                 for (int j = 0; j < len; j++) {
                     w[j] = w[j] + learningRate * delta * x[j];
                 }
@@ -79,18 +92,26 @@ public class Filler {
 
         @Override
         protected void cleanup(Context context) throws IOException, InterruptedException {
+            for (ReviewWritable review : vacantUserIncomeReviews) {
+                Pair<String, CareerWritable.Career> nationalityCareer =
+                        new ImmutablePair<>(review.getUserNationality(), review.getUserCareer());
+                Pair<Double, Integer> statsResult = userIncomeStats.getOrDefault(nationalityCareer,
+                        new ImmutablePair<>(incomeSumAll, incomeStatsCnt));
+                review.setUserIncome(statsResult.getLeft() / statsResult.getRight());
+                context.write(NullWritable.get(), review);
+            }
             for (ReviewWritable review : vacantRatingReviews) {
                 double[] x = getParameters(review);
                 review.setRating(getProduct(x, w));
                 context.write(NullWritable.get(), review);
             }
-            debugOut.close();
+//            debugOut.close();
         }
 
         private String vector2String(double[] v) {
             StringBuilder builder = new StringBuilder("{");
             for (int i = 0; i < len; i++) {
-                builder.append(v[i]);
+                builder.append(String.format("%.3f", v[i]));
                 if (i < len - 1) {
                     builder.append(", ");
                 }
