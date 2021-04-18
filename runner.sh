@@ -70,9 +70,9 @@ fi
 cd $project_path || exit
 echo "Synchronizing from git..."
 git pull
-
 mvn clean validate
 
+cd $java_source_path || exit
 # Compile .java files
 hadoop com.sun.tools.javac.Main -d ./ ./*.java
 
@@ -82,7 +82,6 @@ jar cf main.jar *.class
 if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
     # Prepare and run 1st: sampler
     echo "Sample start"
-    cd $java_source_path || exit
     hdfs dfs -rm -r $bdclab1_hpath/sampler_output
     hadoop jar main.jar Sampler $bdclab1_hpath/input $bdclab1_hpath/sampler_output 0.005
     # hdfs dfs -cat $bdclab1_hpath/output/part-r-00000 | head -n 20
