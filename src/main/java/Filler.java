@@ -59,8 +59,8 @@ public class Filler {
                 context.write(NullWritable.get(), review);
                 double[] x = getParameters(review);
                 double delta = review.getRating() - getProduct(x, wPre);
-                for (int i = 0; i < len; i++) {
-                    w[i] = w[i] + learningRate * delta * wPre[i];
+                for (int j = 0; j < len; j++) {
+                    w[j] = w[j] + learningRate * delta * x[j];
                 }
             }
         }
