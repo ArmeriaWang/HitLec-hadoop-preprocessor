@@ -41,7 +41,7 @@ public class Filler {
         protected void setup(Context context) throws IOException, InterruptedException {
             super.setup(context);
             for (int i = 0; i < len; i++) {
-                w[i] = 0;
+                w[i] = Math.random();
             }
             vacantRatingReviews.clear();
         }
@@ -53,6 +53,7 @@ public class Filler {
             for (ReviewWritable review : reviews) {
                 System.arraycopy(w, 0, wPre, 0, 4);
                 if (review.isVacantUserIncome()) {
+                    context.write(NullWritable.get(), review);
                     continue;
                 } else if (review.isVacantRating()) {
                     vacantRatingReviews.add(review.clone());
