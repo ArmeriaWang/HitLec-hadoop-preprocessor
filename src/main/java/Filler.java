@@ -90,7 +90,7 @@ public class Filler {
         private String vector2String(double[] v) {
             StringBuilder builder = new StringBuilder("{");
             for (int i = 0; i < len; i++) {
-                builder.append(i);
+                builder.append(v[i]);
                 if (i < len - 1) {
                     builder.append(", ");
                 }
