@@ -49,7 +49,6 @@ public class Filler {
             for (int i = 0; i < len; i++) {
                 w[i] = Math.random() * 0.1;
             }
-            w[0] /= 100.0;
             vacantRatingReviews.clear();
         }
 
@@ -110,7 +109,7 @@ public class Filler {
 
         private double[] getParameters(ReviewWritable review) {
             double[] ret = new double[len];
-            ret[0] = review.getUserIncome();
+            ret[0] = review.getUserIncome() / 1000;
             ret[1] = review.getLatitude();
             ret[2] = review.getLongitude();
             ret[3] = review.getAltitude();
