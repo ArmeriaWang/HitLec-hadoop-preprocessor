@@ -32,7 +32,7 @@ public class Filler {
     public static class FillerReducer extends Reducer<IntWritable, ReviewWritable, NullWritable, ReviewWritable> {
         private final int len = 5;
         private final double[] w = new double[len];
-        private final double learningRate = 0.01;
+        private final double learningRate = 0.001;
         private final Set<ReviewWritable> vacantRatingReviews = new HashSet<>();
 
         @Override
