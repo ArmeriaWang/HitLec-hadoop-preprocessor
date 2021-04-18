@@ -68,10 +68,9 @@ public class Filler {
                 context.write(NullWritable.get(), review);
                 double[] x = getParameters(review);
                 double delta = review.getRating() - getProduct(x, wPre);
-                if (key.get() % 100 == 7) {
-                    debugOut.write(String.format("reduce :: %.3f %.3f %.3f\n", review.getRating(), getProduct(x, wPre), delta));
-                    debugOut.flush();
-                }
+                debugOut.write(String.format("reduce :: %.3f %.3f %.3f\n\tw=%s\tx=%s\n",
+                        review.getRating(), getProduct(x, wPre), delta, vector2String(w), vector2String(x)));
+                debugOut.flush();
                 for (int j = 0; j < len; j++) {
                     w[j] = w[j] + learningRate * delta * x[j];
                 }
@@ -86,6 +85,18 @@ public class Filler {
                 context.write(NullWritable.get(), review);
             }
             debugOut.close();
+        }
+
+        private String vector2String(double[] v) {
+            StringBuilder builder = new StringBuilder("{");
+            for (int i = 0; i < len; i++) {
+                builder.append(i);
+                if (i < len - 1) {
+                    builder.append(", ");
+                }
+            }
+            builder.append("}");
+            return builder.toString();
         }
 
         private double getProduct(double[] v1, double[] v2) {
