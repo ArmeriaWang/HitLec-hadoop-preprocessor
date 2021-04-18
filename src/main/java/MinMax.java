@@ -42,7 +42,6 @@ public class MinMax {
         protected void cleanup(Context context) throws IOException, InterruptedException {
             context.write(new DoubleWritable(minRating), NullWritable.get());
             context.write(new DoubleWritable(maxRating), NullWritable.get());
-            super.cleanup(context);
         }
     }
 

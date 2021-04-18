@@ -35,14 +35,15 @@ public class Filter {
                 }
             }
         }
-    }
 
-    private static boolean isLegalLongitude(double longitude) {
-        return longitude >= 8.1461259 && longitude <= 11.1993265;
-    }
+        private static boolean isLegalLongitude(double longitude) {
+            return longitude >= 8.1461259 && longitude <= 11.1993265;
+        }
 
-    private static boolean isLegalLatitude(double latitude) {
-        return latitude >= 56.5824856 && latitude <= 57.750511;
+        private static boolean isLegalLatitude(double latitude) {
+            return latitude >= 56.5824856 && latitude <= 57.750511;
+        }
+
     }
 
     public static void main(String[] args) throws Exception {

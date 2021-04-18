@@ -47,7 +47,6 @@ public class Normalizer {
             minRating = Double.parseDouble(line);
             line = minMaxReader.readLine();
             maxRating = Double.parseDouble(line);
-            super.setup(context);
         }
 
         @Override

@@ -38,8 +38,7 @@ public class Filler {
         private final Set<ReviewWritable> vacantRatingReviews = new HashSet<>();
 
         @Override
-        protected void setup(Context context) throws IOException, InterruptedException {
-            super.setup(context);
+        protected void setup(Context context) {
             for (int i = 0; i < len; i++) {
                 w[i] = Math.random();
             }
@@ -75,7 +74,6 @@ public class Filler {
                 review.setRating(getProduct(x, w));
                 context.write(NullWritable.get(), review);
             }
-            super.cleanup(context);
         }
 
         private double getProduct(double[] v1, double[] v2) {
