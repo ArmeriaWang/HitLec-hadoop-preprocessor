@@ -1,6 +1,15 @@
+# 项目根目录
 project_path="/home/armeria/Work/courses/db_calc/Lab1-1183710106"
+
+# .java源代码目录
 java_source_path=$project_path"/src/main/java"
+
+# HDFS目录
 bdclab1_hpath="/user/armeria/bdclab1"
+
+# Hadoop临时输出目录
+hadoop_tmp_out_path="/home/armeria/Applications/hadoop-3.3.0/tmp"
+
 
 echo_usage() {
     echo "Usage: runner.sh [-i] (-a ROUNDS) | (-s ROUND)"
@@ -60,7 +69,7 @@ printf "\n"
 if [ $init -eq 1 ]; then
     cd $java_source_path || exit
     stop-dfs.sh
-    rm -rf /home/armeria/Applications/hadoop-3.3.0/tmp
+    rm -rf $hadoop_tmp_out_path
     hdfs namenode -format
     start-dfs.sh
     hdfs dfs -mkdir -p $bdclab1_hpath/input
@@ -165,7 +174,7 @@ if [ "$run_all" -ge 5 ] || [ "$run_single" -eq 5 ]; then
         echo "\033[31mFill failed\033[0m"
         exit
     fi
-    mv /home/armeria/debug* ./fill_output
+    # mv /home/armeria/debug* ./fill_output
     # zip -q results_normalize.zip ./normalize_output
     echo "\033[32mFill success\033[0m"
 fi
