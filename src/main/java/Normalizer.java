@@ -39,7 +39,7 @@ public class Normalizer {
         private static double maxRating;
 
         @Override
-        protected void setup(Context context) throws IOException, InterruptedException {
+        protected void setup(Context context) throws IOException {
             InputStream in = minMaxFileSystem.open(minMaxHPath);
             InputStreamReader inputStreamReader = new InputStreamReader(in, StandardCharsets.UTF_8);
             BufferedReader minMaxReader = new BufferedReader(inputStreamReader);
