@@ -61,7 +61,7 @@ public class ReviewWritable implements Writable, Cloneable {
         }
     }
 
-    private static void copyFields(ReviewWritable dest, ReviewWritable src) {
+    private static void copyFields(ReviewWritable src, ReviewWritable dest) {
         dest.reviewId.set(src.getReviewId());
         dest.longitude.set(src.getLongitude());
         dest.latitude.set(src.getLatitude());
@@ -89,7 +89,7 @@ public class ReviewWritable implements Writable, Cloneable {
             e.printStackTrace();
         }
         ReviewWritable that = new ReviewWritable();
-        copyFields(that, this);
+        copyFields(this, that);
         return that;
     }
 
@@ -101,7 +101,7 @@ public class ReviewWritable implements Writable, Cloneable {
     @Override
     public void readFields(DataInput in) throws IOException {
         ReviewWritable that = new ReviewWritable(Text.readString(in));
-        copyFields(this, that);
+        copyFields(that, this);
     }
 
     public String getReviewId() {
@@ -168,6 +168,12 @@ public class ReviewWritable implements Writable, Cloneable {
 
     public void setRating(double rating) {
         this.rating.set(rating);
+        vacantRating = false;
+    }
+
+    public void setUserIncome(double userIncome) {
+        this.userIncome.set(userIncome);
+        vacantUserIncome = false;
     }
 
     public void setReviewDate(String reviewDate) {

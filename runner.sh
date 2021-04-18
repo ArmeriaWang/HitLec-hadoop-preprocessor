@@ -4,10 +4,11 @@ bdclab1_hpath="/user/armeria/bdclab1"
 
 echo_usage() {
     echo "Usage: runner.sh [-i] (-a ROUNDS) | (-s ROUND)"
-        echo "      1 Sample"
-        echo "      2 Filter"
-        echo "      3 MinMax"
-        echo "      4 Normalize"
+    echo "        1 Sample"
+    echo "        2 Filter"
+    echo "        3 MinMax"
+    echo "        4 Normalize"
+    echo "        5 Fill"
 }
 
 run_all=0
@@ -40,7 +41,7 @@ if [ $init -eq 1 ]; then
     printf "Init "
 fi
 if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
-    printf "Sampler "
+    printf "Sample "
 fi
 if [ "$run_all" -ge 2 ] || [ "$run_single" -eq 2 ]; then
     printf "Filter "
@@ -50,6 +51,9 @@ if [ "$run_all" -ge 3 ] || [ "$run_single" -eq 3 ]; then
 fi
 if [ "$run_all" -ge 4 ] || [ "$run_single" -eq 4 ]; then
     printf "Normalize "
+fi
+if [ "$run_all" -ge 5 ] || [ "$run_single" -eq 5 ]; then
+    printf "Fill "
 fi
 printf "\n"
 
@@ -142,6 +146,23 @@ if [ "$run_all" -ge 4 ] || [ "$run_single" -eq 4 ]; then
     fi
     # zip -q results_normalize.zip ./normalize_output
     echo "\033[32mNormalize success\033[0m"
+fi
+
+if [ "$run_all" -ge 5 ] || [ "$run_single" -eq 5 ]; then
+    # Prepare and run 4th: Fill
+    echo "Fill start"
+    cd $java_source_path || exit
+    hdfs dfs -rm -r $bdclab1_hpath/fill_output
+    hadoop jar main.jar Filler $bdclab1_hpath/normalize_output $bdclab1_hpath/fill_output
+    cd $project_path || exit
+    rm -rf ./fill_output
+    hadoop fs -copyToLocal $bdclab1_hpath/fill_output .
+    if [ ! -d "normalize_output" ]; then
+        echo "\033[31mFill failed\033[0m"
+        exit
+    fi
+    # zip -q results_normalize.zip ./normalize_output
+    echo "\033[32mFill success\033[0m"
 fi
 
 echo "\033[32mPlan success\033[0m"

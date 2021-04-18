@@ -102,7 +102,7 @@ public class Normalizer {
         job.setReducerClass(NormalizeReducer.class);
         job.setMapOutputKeyClass(CareerWritable.class);
         job.setMapOutputValueClass(ReviewWritable.class);
-        job.setOutputKeyClass(CareerWritable.class);
+        job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(ReviewWritable.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
