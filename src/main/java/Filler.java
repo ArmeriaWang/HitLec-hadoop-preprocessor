@@ -47,8 +47,9 @@ public class Filler {
             }
             debugOut = new FileWriter(debugFile);
             for (int i = 0; i < len; i++) {
-                w[i] = Math.random();
+                w[i] = Math.random() * 0.1;
             }
+            w[0] /= 100.0;
             vacantRatingReviews.clear();
         }
 
