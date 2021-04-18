@@ -57,8 +57,8 @@ if [ "$run_all" -ge 5 ] || [ "$run_single" -eq 5 ]; then
 fi
 printf "\n"
 
-cd $java_source_path || exit
 if [ $init -eq 1 ]; then
+    cd $java_source_path || exit
     stop-dfs.sh
     rm -rf /home/armeria/Applications/hadoop-3.3.0/tmp
     hdfs namenode -format
@@ -67,6 +67,7 @@ if [ $init -eq 1 ]; then
     hadoop fs -copyFromLocal ../resources/data.txt $bdclab1_hpath/input
 fi
 
+cd $project_path || exit
 echo "Synchronizing from git..."
 git pull
 
@@ -81,6 +82,7 @@ jar cf main.jar *.class
 if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
     # Prepare and run 1st: sampler
     echo "Sample start"
+    cd $java_source_path || exit
     hdfs dfs -rm -r $bdclab1_hpath/sampler_output
     hadoop jar main.jar Sampler $bdclab1_hpath/input $bdclab1_hpath/sampler_output 0.005
     # hdfs dfs -cat $bdclab1_hpath/output/part-r-00000 | head -n 20
