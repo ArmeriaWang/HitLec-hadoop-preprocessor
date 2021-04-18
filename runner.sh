@@ -70,7 +70,8 @@ fi
 cd $project_path || exit
 echo "Synchronizing from git..."
 git pull
-mvn clean validate
+mvn clean
+mvn validate
 
 cd $java_source_path || exit
 # Compile .java files
