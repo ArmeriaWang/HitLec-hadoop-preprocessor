@@ -161,10 +161,9 @@ if [ "$run_all" -ge 5 ] || [ "$run_single" -eq 5 ]; then
         echo "\033[31mFill failed\033[0m"
         exit
     fi
+    mv /home/armeria/debug* ./fill_output
     # zip -q results_normalize.zip ./normalize_output
     echo "\033[32mFill success\033[0m"
 fi
-
-mv /home/armeria/debug* ./
 
 echo "\033[32mPlan success\033[0m"

@@ -68,8 +68,10 @@ public class Filler {
                 context.write(NullWritable.get(), review);
                 double[] x = getParameters(review);
                 double delta = review.getRating() - getProduct(x, wPre);
-                if (key.get() % 100 == 7)
+                if (key.get() % 100 == 7) {
                     debugOut.write(String.format("reduce :: %.3f %.3f %.3f\n", review.getRating(), getProduct(x, wPre), delta));
+                    debugOut.flush();
+                }
                 for (int j = 0; j < len; j++) {
                     w[j] = w[j] + learningRate * delta * x[j];
                 }
@@ -83,6 +85,7 @@ public class Filler {
                 review.setRating(getProduct(x, w));
                 context.write(NullWritable.get(), review);
             }
+            debugOut.close();
         }
 
         private double getProduct(double[] v1, double[] v2) {
