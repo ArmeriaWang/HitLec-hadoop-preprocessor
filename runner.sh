@@ -70,7 +70,7 @@ fi
 echo "Synchronizing from git..."
 git pull
 
-mvn install
+mvn clean validate
 
 # Compile .java files
 hadoop com.sun.tools.javac.Main -d ./ ./*.java
