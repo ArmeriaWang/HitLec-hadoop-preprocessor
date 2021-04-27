@@ -10,6 +10,9 @@ bdclab1_hpath="/user/armeria/bdclab1"
 # Hadoop临时输出目录
 hadoop_tmp_out_path="/home/armeria/Applications/hadoop-3.3.0/tmp"
 
+# data.txt目录
+data_path=$java_source_path/../resources/data.txt
+
 
 echo_usage() {
     echo "Usage: runner.sh [-i] (-a ROUNDS) | (-s ROUND)"
@@ -73,7 +76,7 @@ if [ $init -eq 1 ]; then
     hdfs namenode -format
     start-dfs.sh
     hdfs dfs -mkdir -p $bdclab1_hpath/input
-    hadoop fs -copyFromLocal ../resources/data.txt $bdclab1_hpath/input
+    hadoop fs -copyFromLocal $data_path $bdclab1_hpath/input
 fi
 
 cd $project_path || exit
