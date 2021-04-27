@@ -30,15 +30,6 @@ public class Sampler {
             while (itr.hasMoreTokens()) {
                 String rawString = itr.nextToken();
                 ReviewWritable review = new ReviewWritable(rawString);
-                if (review.isVacantUserIncome() && review.isVacantRating()) {
-                    System.out.println("AAAAAAAAAA========================================================\n");
-                    System.out.println("AAAAAAAAAA========================================================\n");
-                    System.out.println("AAAAAAAAAA========================================================\n");
-                    System.out.println("AAAAAAAAAA========================================================\n");
-                    System.out.println("AAAAAAAAAA========================================================\n");
-                    System.out.println("AAAAAAAAAA========================================================\n");
-                    System.out.println("AAAAAAAAAA========================================================\n");
-                }
                 context.write(CareerWritable.valueOf(review.getUserCareer()), review);
             }
         }
