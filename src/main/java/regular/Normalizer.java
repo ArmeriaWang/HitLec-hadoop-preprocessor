@@ -1,3 +1,7 @@
+package regular;
+
+import common.CareerWritable;
+import common.ReviewWritable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;

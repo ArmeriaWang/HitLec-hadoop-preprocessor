@@ -1,3 +1,7 @@
+package regular;
+
+import common.CareerWritable;
+import common.ReviewWritable;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.hadoop.conf.Configuration;

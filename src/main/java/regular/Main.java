@@ -1,3 +1,5 @@
+package regular;
+
 import java.util.Scanner;
 
 public class Main {

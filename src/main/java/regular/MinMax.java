@@ -1,3 +1,6 @@
+package regular;
+
+import common.ReviewWritable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;

@@ -117,7 +117,7 @@ if [ "$run_all" -ge 2 ] || [ "$run_single" -eq 2 ]; then
     echo "Filter start"
     cd $java_source_path || exit
     hdfs dfs -rm -r $bdclab1_hpath/filter_output
-    hadoop jar main.jar Filter $bdclab1_hpath/sampler_output $bdclab1_hpath/filter_output
+    hadoop jar main.jar regular.Filter $bdclab1_hpath/sampler_output $bdclab1_hpath/filter_output
     cd $project_path || exit
     rm -rf ./filter_output
     hadoop fs -copyToLocal $bdclab1_hpath/filter_output .
@@ -134,7 +134,7 @@ if [ "$run_all" -ge 3 ] || [ "$run_single" -eq 3 ]; then
     echo "Minmax start"
     cd $java_source_path || exit
     hdfs dfs -rm -r $bdclab1_hpath/minmax_output
-    hadoop jar main.jar MinMax $bdclab1_hpath/filter_output $bdclab1_hpath/minmax_output
+    hadoop jar main.jar regular.MinMax $bdclab1_hpath/filter_output $bdclab1_hpath/minmax_output
     cd $project_path || exit
     rm -rf ./minmax_output
     hadoop fs -copyToLocal $bdclab1_hpath/minmax_output .
@@ -169,7 +169,7 @@ if [ "$run_all" -ge 5 ] || [ "$run_single" -eq 5 ]; then
     echo "Fill start"
     cd $java_source_path || exit
     hdfs dfs -rm -r $bdclab1_hpath/fill_output
-    hadoop jar main.jar Filler $bdclab1_hpath/normalize_output $bdclab1_hpath/fill_output
+    hadoop jar main.jar regular.Filler $bdclab1_hpath/normalize_output $bdclab1_hpath/fill_output
     cd $project_path || exit
     rm -rf ./fill_output
     hadoop fs -copyToLocal $bdclab1_hpath/fill_output .

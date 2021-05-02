@@ -1,3 +1,5 @@
+package regular;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -5,6 +7,8 @@ import java.util.StringTokenizer;
 
 import java.util.Random;
 
+import common.CareerWritable;
+import common.ReviewWritable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
@@ -18,7 +22,7 @@ import org.apache.hadoop.util.Time;
 
 public class Sampler {
 
-//    private static File debugLogFile;
+    //    private static File debugLogFile;
 //    private static BufferedWriter debugOut;
     private static double sampleRate;
 
@@ -47,8 +51,7 @@ public class Sampler {
             for (ReviewWritable review : reviews) {
                 if (cnt < layerSampleNum) {
                     samples.add(review.clone());
-                }
-                else {
+                } else {
                     double randomDouble = random.nextDouble();
                     if (randomDouble < layerSampleNum * 1.0 / (cnt + 1)) {
                         int randomInt = random.nextInt(layerSampleNum);
