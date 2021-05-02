@@ -96,7 +96,7 @@ if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
     # Prepare and run 1st: sampler
     echo "Sample start"
     hdfs dfs -rm -r $bdclab1_hpath/sampler_output
-    hadoop jar main.jar Sampler $bdclab1_hpath/input $bdclab1_hpath/sampler_output 0.005
+    hadoop jar main.jar regular.Sampler $bdclab1_hpath/input $bdclab1_hpath/sampler_output 0.005
     # hdfs dfs -cat $bdclab1_hpath/output/part-r-00000 | head -n 20
     cd $project_path || exit
     rm -rf ./sampler_output
@@ -152,7 +152,7 @@ if [ "$run_all" -ge 4 ] || [ "$run_single" -eq 4 ]; then
     cd $java_source_path || exit
     hdfs dfs -rm -r $bdclab1_hpath/normalize_output
     hdfs dfs -cp $bdclab1_hpath/minmax_output/part-r-00000 $bdclab1_hpath/minmax_output/minmax.txt
-    hadoop jar main.jar Normalizer $bdclab1_hpath/filter_output $bdclab1_hpath/normalize_output $bdclab1_hpath/minmax_output/minmax.txt
+    hadoop jar main.jar regular.Normalizer $bdclab1_hpath/filter_output $bdclab1_hpath/normalize_output $bdclab1_hpath/minmax_output/minmax.txt
     cd $project_path || exit
     rm -rf ./normalize_output
     hadoop fs -copyToLocal $bdclab1_hpath/normalize_output .
