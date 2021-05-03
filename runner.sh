@@ -91,9 +91,8 @@ mvn validate
 
 cd $java_source_path || exit
 # Compile .java files
-rm ./*.class
-rm ./*.jar
-hadoop com.sun.tools.javac.Main -d ./ ./common/*.java ./effective/*.java ./regular/*.java
+rm -r ./classes
+hadoop com.sun.tools.javac.Main -d ./classes ./common/*.java ./effective/*.java ./regular/*.java
 
 # Pack as main.jar
 jar cf main.jar ./*.class
