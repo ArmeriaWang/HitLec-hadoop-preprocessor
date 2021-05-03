@@ -62,6 +62,7 @@ public class NormalizeFiller {
         private final Map<Pair<String, CareerWritable.Career>, Pair<Double, Integer>> userIncomeStats = new HashMap<>();
         private double incomeSumAll;
         private int incomeStatsCnt;
+        private double deltaSum;
 
         private double getDoubleFromMinMax(BufferedReader reader) throws IOException {
             String line = reader.readLine();
@@ -89,6 +90,7 @@ public class NormalizeFiller {
             }
             incomeSumAll = 0.0;
             incomeStatsCnt = 0;
+            deltaSum = 0.0;
             vacantUserIncomeReviews.clear();
             vacantRatingReviews.clear();
             userIncomeStats.clear();
@@ -125,13 +127,14 @@ public class NormalizeFiller {
                 context.write(NullWritable.get(), review);
                 double[] x = getParameters(review);
                 double delta = review.getRating() - getProduct(x, wPre);
+                deltaSum += delta;
                 incomeSumAll += review.getUserIncome();
                 incomeStatsCnt++;
                 for (int j = 0; j < len; j++) {
                     w[j] = w[j] + learningRate * delta * x[j];
                 }
                 if (incomeStatsCnt % 100 == 0) {
-                    System.out.println(delta + "\t" + getProduct(x, wPre));
+                    System.out.println(deltaSum / incomeStatsCnt);
                 }
             }
         }
