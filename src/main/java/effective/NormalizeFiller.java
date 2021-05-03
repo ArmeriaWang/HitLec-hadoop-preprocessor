@@ -111,7 +111,7 @@ public class NormalizeFiller {
                 review.setTemperature(normalizeTemperature(reviewFromIter.getTemperature()));
                 double[] wPre = new double[len];
 
-                System.arraycopy(w, 0, wPre, 0, 5);
+                System.arraycopy(w, 0, wPre, 0, len);
                 if (review.isVacantUserIncome()) {
                     vacantUserIncomeReviews.add(review.clone());
                     continue;
@@ -136,12 +136,8 @@ public class NormalizeFiller {
                     w[j] = w[j] + learningRate * delta * x[j];
                 }
                 if (incomeStatsCnt % printInterval == 0) {
-                    System.out.println(vector2String(x));
-                    System.out.println(vector2String(w));
                     System.out.println(deltaSum / printInterval);
-                    System.out.println(review.getRating() + "\t" + getProduct(x, wPre));
                     deltaSum = 0;
-//                    System.out.println(delta + "\t" + getProduct(x, wPre) + "\t" + deltaSum / incomeStatsCnt);
                 }
             }
         }
@@ -159,8 +155,6 @@ public class NormalizeFiller {
             for (ReviewWritable review : vacantRatingReviews) {
                 double[] x = getParameters(review);
                 review.setRating(getProduct(x, w));
-                System.out.println(vector2String(x));
-                System.out.println(vector2String(w));
                 context.write(NullWritable.get(), review);
             }
         }

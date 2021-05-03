@@ -41,6 +41,8 @@ public class Filler {
         private final Map<Pair<String, CareerWritable.Career>, Pair<Double, Integer>> userIncomeStats = new HashMap<>();
         private double incomeSumAll;
         private int incomeStatsCnt;
+        private double deltaSum;
+        private int printInterval;
 //        private static FileWriter debugOut;
 
         @Override
@@ -55,6 +57,8 @@ public class Filler {
             }
             incomeSumAll = 0.0;
             incomeStatsCnt = 0;
+            deltaSum = 0.0;
+            printInterval = 50;
             vacantUserIncomeReviews.clear();
             vacantRatingReviews.clear();
             userIncomeStats.clear();
@@ -65,7 +69,7 @@ public class Filler {
                 throws IOException, InterruptedException {
             double[] wPre = new double[len];
             for (ReviewWritable review : reviews) {
-                System.arraycopy(w, 0, wPre, 0, 4);
+                System.arraycopy(w, 0, wPre, 0, len);
                 if (review.isVacantUserIncome()) {
                     vacantUserIncomeReviews.add(review.clone());
                     continue;
@@ -85,11 +89,13 @@ public class Filler {
                 double delta = review.getRating() - getProduct(x, wPre);
                 incomeSumAll += review.getUserIncome();
                 incomeStatsCnt++;
-//                debugOut.write(String.format("reduce :: %.3f %.3f %.3f\n\tw=%s\tx=%s\n",
-//                        review.getRating(), getProduct(x, wPre), delta, vector2String(w), vector2String(x)));
-//                debugOut.flush();
+                deltaSum += Math.abs(delta);
                 for (int j = 0; j < len; j++) {
                     w[j] = w[j] + learningRate * delta * x[j];
+                }
+                if (incomeStatsCnt % printInterval == 0) {
+                    System.out.println(deltaSum / printInterval);
+                    deltaSum = 0;
                 }
             }
         }
