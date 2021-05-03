@@ -97,6 +97,7 @@ hadoop com.sun.tools.javac.Main -d ./classes ./common/*.java ./effective/*.java 
 # Pack as main.jar
 cd ./classes || exit
 jar cf main.jar ./*
+mv ./main.jar ../
 cd ..
 
 if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
