@@ -56,7 +56,7 @@ public class NormalizeFiller {
 
         private final int len = 5;
         private final double[] w = new double[len];
-        private final double learningRate = 0.001;
+        private final double learningRate = 0.005;
         private final Set<ReviewWritable> vacantRatingReviews = new HashSet<>();
         private final Set<ReviewWritable> vacantUserIncomeReviews = new HashSet<>();
         private final Map<Pair<String, CareerWritable.Career>, Pair<Double, Integer>> userIncomeStats = new HashMap<>();
