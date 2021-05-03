@@ -130,6 +130,9 @@ public class NormalizeFiller {
                 for (int j = 0; j < len; j++) {
                     w[j] = w[j] + learningRate * delta * x[j];
                 }
+                if (incomeStatsCnt % 100 == 0) {
+                    System.out.println(delta);
+                }
             }
         }
 
