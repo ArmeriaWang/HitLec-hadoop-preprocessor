@@ -93,7 +93,7 @@ cd $java_source_path || exit
 # Compile .java files
 rm ./*.class
 rm ./*.jar
-hadoop com.sun.tools.javac.Main -d ./ ./*.java
+hadoop com.sun.tools.javac.Main -d ./ ./**/*.java
 
 # Pack as main.jar
 jar cf main.jar ./*.class
