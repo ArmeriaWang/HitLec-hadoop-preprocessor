@@ -139,6 +139,7 @@ public class NormalizeFiller {
                     System.out.println(vector2String(x));
                     System.out.println(vector2String(w));
                     System.out.println(deltaSum / printInterval);
+                    System.out.println(review.getRating() + "\t" + getProduct(x, wPre));
                     deltaSum = 0;
 //                    System.out.println(delta + "\t" + getProduct(x, wPre) + "\t" + deltaSum / incomeStatsCnt);
                 }
