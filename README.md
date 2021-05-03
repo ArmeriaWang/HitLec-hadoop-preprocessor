@@ -36,7 +36,7 @@ git version 2.25.1
 一键编译运行：
 
 ```shell
-$ ./runner.sh -i -a 5
+$ ./runner_regular.sh -i -a 5
 ```
 
 ### 未缩减 MapReduce 轮数的版本

@@ -3,6 +3,7 @@ package effective;
 import common.CareerWritable;
 import common.ReviewWritable;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
@@ -13,14 +14,17 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Time;
 
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public class Sampler {
+public class SampleFilterMinMax {
 
+    private static Path minMaxHPath;
+    private static FileSystem minMaxFileSystem;
     private static double sampleRate;
 
     public static class SampleFilterMapper extends Mapper<Object, Text, CareerWritable, ReviewWritable> {
@@ -37,6 +41,9 @@ public class Sampler {
     }
 
     public static class SampleFilterReducer extends Reducer<CareerWritable, ReviewWritable, NullWritable, ReviewWritable> {
+
+        private double minRating = Double.MAX_VALUE;
+        private double maxRating = Double.MIN_VALUE;
 
         @Override
         protected void reduce(CareerWritable key, Iterable<ReviewWritable> reviews, Context context)
@@ -59,9 +66,22 @@ public class Sampler {
             }
             for (ReviewWritable sample : samples) {
                 if (isLegalLatitude(sample.getLatitude()) && isLegalLongitude((sample.getLongitude()))) {
+                    minRating = Math.min(minRating, sample.getRating());
+                    maxRating = Math.max(maxRating, sample.getRating());
                     context.write(NullWritable.get(), sample);
                 }
             }
+        }
+
+        @Override
+        protected void cleanup(Context context) throws IOException, InterruptedException {
+            minMaxFileSystem.createFile(minMaxHPath);
+            OutputStream out = minMaxFileSystem.append(minMaxHPath);
+            OutputStreamWriter outputStreamReader = new OutputStreamWriter(out, StandardCharsets.UTF_8);
+            BufferedWriter minMaxWriter = new BufferedWriter(outputStreamReader);
+            minMaxWriter.write(minRating + "\t" + maxRating);
+            minMaxWriter.flush();
+            minMaxWriter.close();
         }
 
         private static boolean isLegalLongitude(double longitude) {
@@ -76,7 +96,7 @@ public class Sampler {
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "sample");
-        job.setJarByClass(Sampler.class);
+        job.setJarByClass(SampleFilterMinMax.class);
         job.setMapperClass(SampleFilterMapper.class);
         job.setReducerClass(SampleFilterReducer.class);
         job.setMapOutputKeyClass(CareerWritable.class);
@@ -86,6 +106,8 @@ public class Sampler {
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
         sampleRate = Double.parseDouble(args[2]);
+        minMaxHPath = new Path(args[2]);
+        minMaxFileSystem = minMaxHPath.getFileSystem(conf);
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 
