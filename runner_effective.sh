@@ -102,7 +102,7 @@ if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
     cd $project_path || exit
     rm -rf ./sample_filter_minmax_output
     hadoop fs -copyToLocal $bdclab1_hpath_effective/sample_filter_minmax_output $local_results_path
-    if [ ! -d "sampler_output" ]; then
+    if [ ! -d "sample_filter_minmax_output" ]; then
         echo "\033[31mRound 1 :: Sample Filter MinMax failed!\033[0m"
         exit
     fi
