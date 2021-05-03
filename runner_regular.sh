@@ -125,7 +125,7 @@ if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
 fi
 
 if [ "$run_all" -ge 2 ] || [ "$run_single" -eq 2 ]; then
-    # Prepare and run 2st: filter
+    # Prepare and run 2nd: filter
     echo "Round 2 :: Filter - start!"
     cd $java_source_path || exit
     hdfs dfs -rm -r $bdclab1_hpath_regular/filter_output
@@ -177,7 +177,7 @@ if [ "$run_all" -ge 4 ] || [ "$run_single" -eq 4 ]; then
 fi
 
 if [ "$run_all" -ge 5 ] || [ "$run_single" -eq 5 ]; then
-    # Prepare and run 4th: Fill
+    # Prepare and run 5th: Fill
     echo "Round 5 :: Fill - start!"
     cd $java_source_path || exit
     hdfs dfs -rm -r $bdclab1_hpath_regular/fill_output

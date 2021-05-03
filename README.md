@@ -52,7 +52,7 @@ $ ./runner_regular.sh -i -a 5
 - `regular.MinMax` 求 `Rating` 属性的最大 / 最小值，为归一化做准备。
 - `regular.Normalizer` 归一化，将 `Rating` 属性做 Min-Max 归一化。
 - `regular.Filler` 填充，用线性回归模型填充缺失的 `Rating` 值，用对应国家和职业的平均数填充缺失的 `UserIncome` 值。
-  - regular 版本的线性回归所用的四个特征中，除了 `Rating` 外，其余三个都没有做严格的归一化
+  - regular 版本的线性回归所用的四个特征中，除了 `Rating` 外，其余三个都没有做严格的归一化。
   - Loss 随训练样本数的变化折线如下图所示。
 
 ![image-20210504013354822](https://i.loli.net/2021/05/04/haTk469H8X7tr5V.png)

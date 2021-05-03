@@ -116,7 +116,7 @@ if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
 fi
 
 if [ "$run_all" -ge 2 ] || [ "$run_single" -eq 2 ]; then
-    # Prepare and run 2st: Normalize Fill
+    # Prepare and run 2nd: Normalize Fill
     echo "Round 2 :: Normalize Fill - start!"
     cd $java_source_path || exit
     hdfs dfs -rm -r $bdclab1_hpath_effective/normalize_filler_output
