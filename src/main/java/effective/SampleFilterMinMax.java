@@ -66,8 +66,10 @@ public class SampleFilterMinMax {
             }
             for (ReviewWritable sample : samples) {
                 if (isLegalLatitude(sample.getLatitude()) && isLegalLongitude((sample.getLongitude()))) {
-                    minRating = Math.min(minRating, sample.getRating());
-                    maxRating = Math.max(maxRating, sample.getRating());
+                    if (!sample.isVacantRating()) {
+                        minRating = Math.min(minRating, sample.getRating());
+                        maxRating = Math.max(maxRating, sample.getRating());
+                    }
                     context.write(NullWritable.get(), sample);
                 }
             }
