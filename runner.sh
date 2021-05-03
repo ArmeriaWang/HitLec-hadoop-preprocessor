@@ -91,10 +91,12 @@ mvn validate
 
 cd $java_source_path || exit
 # Compile .java files
-hadoop com.sun.tools.javac.Main -d ./
+rm ./*.class
+rm ./*.jar
+hadoop com.sun.tools.javac.Main -d ./ ./*.java
 
 # Pack as main.jar
-jar cf main.jar *.class
+jar cf main.jar ./*.class
 
 if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
     # Prepare and run 1st: sampler
