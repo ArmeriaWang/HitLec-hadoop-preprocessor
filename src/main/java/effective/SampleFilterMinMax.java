@@ -80,7 +80,7 @@ public class SampleFilterMinMax {
             OutputStream out = minMaxFileSystem.create(minMaxHPath);
             OutputStreamWriter outputStreamReader = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             BufferedWriter minMaxWriter = new BufferedWriter(outputStreamReader);
-            minMaxWriter.write(minRating + "\t" + maxRating);
+            minMaxWriter.write(minRating + "\n" + maxRating);
             minMaxWriter.flush();
             minMaxWriter.close();
         }
