@@ -44,6 +44,14 @@ public class SampleFilterMinMax {
 
         private double minRating = Double.MAX_VALUE;
         private double maxRating = Double.MIN_VALUE;
+        private double minUserIncome = Double.MAX_VALUE;
+        private double maxUserIncome = Double.MIN_VALUE;
+        private double minLatitude = Double.MAX_VALUE;
+        private double maxLatitude = Double.MIN_VALUE;
+        private double minLongitude = Double.MAX_VALUE;
+        private double maxLongitude = Double.MIN_VALUE;
+        private double minAltitude = Double.MAX_VALUE;
+        private double maxAltitude = Double.MIN_VALUE;
 
         @Override
         protected void reduce(CareerWritable key, Iterable<ReviewWritable> reviews, Context context)
@@ -69,6 +77,14 @@ public class SampleFilterMinMax {
                     if (!sample.isVacantRating()) {
                         minRating = Math.min(minRating, sample.getRating());
                         maxRating = Math.max(maxRating, sample.getRating());
+                        minUserIncome = Math.min(minUserIncome, sample.getUserIncome());
+                        maxUserIncome = Math.max(maxUserIncome, sample.getUserIncome());
+                        minAltitude = Math.min(minAltitude, sample.getAltitude());
+                        maxAltitude = Math.max(maxAltitude, sample.getAltitude());
+                        minLatitude = Math.min(minLatitude, sample.getLatitude());
+                        maxLatitude = Math.max(maxLatitude, sample.getLatitude());
+                        minLongitude = Math.min(minLongitude, sample.getLongitude());
+                        maxLongitude = Math.max(maxLongitude, sample.getLongitude());
                     }
                     context.write(NullWritable.get(), sample);
                 }
@@ -80,7 +96,11 @@ public class SampleFilterMinMax {
             OutputStream out = minMaxFileSystem.create(minMaxHPath);
             OutputStreamWriter outputStreamReader = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             BufferedWriter minMaxWriter = new BufferedWriter(outputStreamReader);
-            minMaxWriter.write(minRating + "\n" + maxRating);
+            minMaxWriter.write(minRating + "\n" + maxRating + "\n");
+            minMaxWriter.write(minUserIncome + "\n" + maxUserIncome + "\n");
+            minMaxWriter.write(minAltitude + "\n" + maxAltitude + "\n");
+            minMaxWriter.write(minLatitude + "\n" + maxLatitude + "\n");
+            minMaxWriter.write(minLongitude + "\n" + maxLongitude + "\n");
             minMaxWriter.flush();
             minMaxWriter.close();
         }

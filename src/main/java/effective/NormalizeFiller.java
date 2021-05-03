@@ -40,10 +40,19 @@ public class NormalizeFiller {
         }
     }
 
-    public static class NormalizeFillerReducer extends Reducer<IntWritable, ReviewWritable, NullWritable, ReviewWritable> {
+    public static class NormalizeFillerReducer
+            extends Reducer<IntWritable, ReviewWritable, NullWritable, ReviewWritable> {
 
         private static double minRating;
         private static double maxRating;
+        private double minUserIncome = Double.MAX_VALUE;
+        private double maxUserIncome = Double.MIN_VALUE;
+        private double minLatitude = Double.MAX_VALUE;
+        private double maxLatitude = Double.MIN_VALUE;
+        private double minLongitude = Double.MAX_VALUE;
+        private double maxLongitude = Double.MIN_VALUE;
+        private double minAltitude = Double.MAX_VALUE;
+        private double maxAltitude = Double.MIN_VALUE;
 
         private final int len = 5;
         private final double[] w = new double[len];
@@ -54,15 +63,26 @@ public class NormalizeFiller {
         private double incomeSumAll;
         private int incomeStatsCnt;
 
+        private double getDoubleFromMinMax(BufferedReader reader) throws IOException {
+            String line = reader.readLine();
+            return Double.parseDouble(line);
+        }
+
         @Override
         protected void setup(Context context) throws IOException {
             InputStream in = minMaxFileSystem.open(minMaxHPath);
             InputStreamReader inputStreamReader = new InputStreamReader(in, StandardCharsets.UTF_8);
             BufferedReader minMaxReader = new BufferedReader(inputStreamReader);
-            String line = minMaxReader.readLine();
-            minRating = Double.parseDouble(line);
-            line = minMaxReader.readLine();
-            maxRating = Double.parseDouble(line);
+            minRating = getDoubleFromMinMax(minMaxReader);
+            maxRating = getDoubleFromMinMax(minMaxReader);
+            minUserIncome = getDoubleFromMinMax(minMaxReader);
+            maxUserIncome = getDoubleFromMinMax(minMaxReader);
+            minAltitude = getDoubleFromMinMax(minMaxReader);
+            maxAltitude = getDoubleFromMinMax(minMaxReader);
+            minLatitude = getDoubleFromMinMax(minMaxReader);
+            maxLatitude = getDoubleFromMinMax(minMaxReader);
+            minLongitude = getDoubleFromMinMax(minMaxReader);
+            maxLongitude = getDoubleFromMinMax(minMaxReader);
 
             for (int i = 0; i < len; i++) {
                 w[i] = Math.random();
@@ -80,7 +100,7 @@ public class NormalizeFiller {
             for (ReviewWritable reviewFromIter : reviews) {
                 ReviewWritable review = reviewFromIter.clone();
                 if (!review.isVacantRating()) {
-                    review.setRating(normalizeRating(reviewFromIter.getRating()));
+                    review.setRating(normalizeDouble(reviewFromIter.getRating(), minRating, maxRating));
                 }
                 review.setReviewDate(normalizeDate(reviewFromIter.getReviewDate()));
                 review.setUserBirthday(normalizeDate(reviewFromIter.getUserBirthday()));
@@ -130,11 +150,11 @@ public class NormalizeFiller {
             }
         }
 
-        private static double normalizeRating(double rating) {
-            if (maxRating - minRating < 1e-9) {
+        private static double normalizeDouble(double value, double minValue, double maxValue) {
+            if (maxValue - minValue < 1e-9) {
                 return 0;
             }
-            return (rating - minRating) / (maxRating - minRating);
+            return (value - minValue) / (maxValue - minValue);
         }
 
         private static String normalizeDate(String dateString) {
@@ -168,10 +188,10 @@ public class NormalizeFiller {
 
         private double[] getParameters(ReviewWritable review) {
             double[] ret = new double[len];
-            ret[0] = review.getUserIncome() / 10000.0;
-            ret[1] = review.getLatitude() / 100.0;
-            ret[2] = review.getLongitude() / 100.0;
-            ret[3] = review.getAltitude() / 100.0;
+            ret[0] = normalizeDouble(review.getUserIncome(), minUserIncome, maxUserIncome);
+            ret[1] = normalizeDouble(review.getLatitude(), minLatitude, maxLatitude);
+            ret[2] = normalizeDouble(review.getLongitude(), minLongitude, maxLongitude);
+            ret[3] = normalizeDouble(review.getAltitude(), minAltitude, maxAltitude);
             ret[4] = 1;
             return ret;
         }
