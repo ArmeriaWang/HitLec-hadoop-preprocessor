@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public class Sample {
+public class Sampler {
 
     private static double sampleRate;
 
@@ -76,7 +76,7 @@ public class Sample {
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "sample");
-        job.setJarByClass(Sample.class);
+        job.setJarByClass(Sampler.class);
         job.setMapperClass(SampleFilterMapper.class);
         job.setReducerClass(SampleFilterReducer.class);
         job.setMapOutputKeyClass(CareerWritable.class);
