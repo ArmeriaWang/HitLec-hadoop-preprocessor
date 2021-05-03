@@ -136,6 +136,8 @@ public class NormalizeFiller {
                     w[j] = w[j] + learningRate * delta * x[j];
                 }
                 if (incomeStatsCnt % printInterval == 0) {
+                    System.out.println(vector2String(x));
+                    System.out.println(vector2String(w));
                     System.out.println(deltaSum / printInterval);
                     deltaSum = 0;
 //                    System.out.println(delta + "\t" + getProduct(x, wPre) + "\t" + deltaSum / incomeStatsCnt);
