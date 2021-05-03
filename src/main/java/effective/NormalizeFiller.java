@@ -127,7 +127,7 @@ public class NormalizeFiller {
                 context.write(NullWritable.get(), review);
                 double[] x = getParameters(review);
                 double delta = review.getRating() - getProduct(x, wPre);
-                deltaSum += delta;
+                deltaSum += Math.abs(delta);
                 incomeSumAll += review.getUserIncome();
                 incomeStatsCnt++;
                 for (int j = 0; j < len; j++) {
