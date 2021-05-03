@@ -156,6 +156,8 @@ public class NormalizeFiller {
             for (ReviewWritable review : vacantRatingReviews) {
                 double[] x = getParameters(review);
                 review.setRating(getProduct(x, w));
+                System.out.println(vector2String(x));
+                System.out.println(vector2String(w));
                 context.write(NullWritable.get(), review);
             }
         }
@@ -204,6 +206,18 @@ public class NormalizeFiller {
             ret[3] = normalizeDouble(review.getAltitude(), minAltitude, maxAltitude);
             ret[4] = 1;
             return ret;
+        }
+
+        private String vector2String(double[] v) {
+            StringBuilder builder = new StringBuilder("{");
+            for (int i = 0; i < len; i++) {
+                builder.append(String.format("%.3f", v[i]));
+                if (i < len - 1) {
+                    builder.append(", ");
+                }
+            }
+            builder.append("}");
+            return builder.toString();
         }
     }
 
