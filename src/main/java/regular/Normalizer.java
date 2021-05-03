@@ -5,6 +5,7 @@ import common.ReviewWritable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -18,26 +19,28 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Random;
 import java.util.StringTokenizer;
 
 public class Normalizer {
 
     private static Path minMaxHPath;
     private static FileSystem minMaxFileSystem;
+    private static Random random = new Random();
 
-    public static class NormalizeMapper extends Mapper<Object, Text, CareerWritable, ReviewWritable> {
+    public static class NormalizeMapper extends Mapper<Object, Text, IntWritable, ReviewWritable> {
         @Override
         protected void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             StringTokenizer itr = new StringTokenizer(value.toString(), "\n");
             while (itr.hasMoreTokens()) {
                 String rawString = itr.nextToken();
                 ReviewWritable review = new ReviewWritable(rawString);
-                context.write(CareerWritable.valueOf(review.getUserCareer()), review);
+                context.write(new IntWritable(random.nextInt()), review);
             }
         }
     }
 
-    public static class NormalizeReducer extends Reducer<CareerWritable, ReviewWritable, NullWritable, ReviewWritable> {
+    public static class NormalizeReducer extends Reducer<IntWritable, ReviewWritable, NullWritable, ReviewWritable> {
 
         private static double minRating;
         private static double maxRating;
@@ -54,7 +57,7 @@ public class Normalizer {
         }
 
         @Override
-        protected void reduce(CareerWritable key, Iterable<ReviewWritable> reviews, Context context)
+        protected void reduce(IntWritable key, Iterable<ReviewWritable> reviews, Context context)
                 throws IOException, InterruptedException {
             for (ReviewWritable review : reviews) {
                 ReviewWritable reviewOut = review.clone();
@@ -103,7 +106,7 @@ public class Normalizer {
         job.setJarByClass(Normalizer.class);
         job.setMapperClass(NormalizeMapper.class);
         job.setReducerClass(NormalizeReducer.class);
-        job.setMapOutputKeyClass(CareerWritable.class);
+        job.setMapOutputKeyClass(IntWritable.class);
         job.setMapOutputValueClass(ReviewWritable.class);
         job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(ReviewWritable.class);

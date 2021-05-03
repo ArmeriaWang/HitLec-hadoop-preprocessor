@@ -5,6 +5,7 @@ import common.ReviewWritable;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.NullWritable;
@@ -15,14 +16,21 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class Filler {
-    public static class FillerMapper extends Mapper<Object, Text, IntWritable, ReviewWritable> {
+public class NormalizeFiller {
+
+    private static Path minMaxHPath;
+    private static FileSystem minMaxFileSystem;
+    private final static Random random = new Random();
+
+    public static class NormalizeFillerMapper extends Mapper<Object, Text, IntWritable, ReviewWritable> {
         @Override
         protected void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-            Random random = new Random();
             StringTokenizer itr = new StringTokenizer(value.toString(), "\n");
             while (itr.hasMoreTokens()) {
                 String rawString = itr.nextToken();
@@ -32,7 +40,11 @@ public class Filler {
         }
     }
 
-    public static class FillerReducer extends Reducer<IntWritable, ReviewWritable, NullWritable, ReviewWritable> {
+    public static class NormalizeFillerReducer extends Reducer<IntWritable, ReviewWritable, NullWritable, ReviewWritable> {
+
+        private static double minRating;
+        private static double maxRating;
+
         private final int len = 5;
         private final double[] w = new double[len];
         private final double learningRate = 0.0001;
@@ -41,15 +53,17 @@ public class Filler {
         private final Map<Pair<String, CareerWritable.Career>, Pair<Double, Integer>> userIncomeStats = new HashMap<>();
         private double incomeSumAll;
         private int incomeStatsCnt;
-//        private static FileWriter debugOut;
 
         @Override
         protected void setup(Context context) throws IOException {
-//            File debugFile = new File("/home/armeria/debug_filler_0.txt");
-//            if (!debugFile.exists()) {
-//                debugFile.createNewFile();
-//            }
-//            debugOut = new FileWriter(debugFile);
+            InputStream in = minMaxFileSystem.open(minMaxHPath);
+            InputStreamReader inputStreamReader = new InputStreamReader(in, StandardCharsets.UTF_8);
+            BufferedReader minMaxReader = new BufferedReader(inputStreamReader);
+            String line = minMaxReader.readLine();
+            minRating = Double.parseDouble(line);
+            line = minMaxReader.readLine();
+            maxRating = Double.parseDouble(line);
+
             for (int i = 0; i < len; i++) {
                 w[i] = Math.random() * 0.1;
             }
@@ -63,8 +77,16 @@ public class Filler {
         @Override
         protected void reduce(IntWritable key, Iterable<ReviewWritable> reviews, Context context)
                 throws IOException, InterruptedException {
-            double[] wPre = new double[len];
-            for (ReviewWritable review : reviews) {
+            for (ReviewWritable reviewFromIter : reviews) {
+                ReviewWritable review = reviewFromIter.clone();
+                if (!review.isVacantRating()) {
+                    review.setRating(normalizeRating(reviewFromIter.getRating()));
+                }
+                review.setReviewDate(normalizeDate(reviewFromIter.getReviewDate()));
+                review.setUserBirthday(normalizeDate(reviewFromIter.getUserBirthday()));
+                review.setTemperature(normalizeTemperature(reviewFromIter.getTemperature()));
+                double[] wPre = new double[len];
+
                 System.arraycopy(w, 0, wPre, 0, 4);
                 if (review.isVacantUserIncome()) {
                     vacantUserIncomeReviews.add(review.clone());
@@ -85,9 +107,6 @@ public class Filler {
                 double delta = review.getRating() - getProduct(x, wPre);
                 incomeSumAll += review.getUserIncome();
                 incomeStatsCnt++;
-//                debugOut.write(String.format("reduce :: %.3f %.3f %.3f\n\tw=%s\tx=%s\n",
-//                        review.getRating(), getProduct(x, wPre), delta, vector2String(w), vector2String(x)));
-//                debugOut.flush();
                 for (int j = 0; j < len; j++) {
                     w[j] = w[j] + learningRate * delta * x[j];
                 }
@@ -109,19 +128,34 @@ public class Filler {
                 review.setRating(getProduct(x, w));
                 context.write(NullWritable.get(), review);
             }
-//            debugOut.close();
         }
 
-        private String vector2String(double[] v) {
-            StringBuilder builder = new StringBuilder("{");
-            for (int i = 0; i < len; i++) {
-                builder.append(String.format("%.3f", v[i]));
-                if (i < len - 1) {
-                    builder.append(", ");
-                }
+        private static double normalizeRating(double rating) {
+            if (maxRating - minRating < 1e-9) {
+                return 0;
             }
-            builder.append("}");
-            return builder.toString();
+            return (rating - minRating) / (maxRating - minRating);
+        }
+
+        private static String normalizeDate(String dateString) {
+            if (dateString.contains("/")) {
+                return dateString.replaceAll("/", "-");
+            } else if (dateString.contains("-")) {
+                return dateString;
+            } else {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d,yyyy", Locale.ENGLISH);
+                LocalDate date = LocalDate.parse(dateString, formatter);
+                return date.toString();
+            }
+        }
+
+        private static String normalizeTemperature(String temperature) {
+            if (temperature.endsWith("℉")) {
+                double temp = Double.parseDouble(temperature.substring(0, temperature.length() - 1));
+                return String.format("%.1f℃", (temp - 32) / 1.8);
+            } else {
+                return temperature;
+            }
         }
 
         private double getProduct(double[] v1, double[] v2) {
@@ -141,21 +175,23 @@ public class Filler {
             ret[4] = 1;
             return ret;
         }
-
     }
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf, "min max");
-        job.setJarByClass(Sampler.class);
-        job.setMapperClass(FillerMapper.class);
-        job.setReducerClass(FillerReducer.class);
+        Job job = Job.getInstance(conf, "normalize");
+        job.setJarByClass(Normalizer.class);
+        job.setMapperClass(NormalizeFillerMapper.class);
+        job.setReducerClass(NormalizeFillerReducer.class);
         job.setMapOutputKeyClass(IntWritable.class);
         job.setMapOutputValueClass(ReviewWritable.class);
         job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(ReviewWritable.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        minMaxHPath = new Path(args[2]);
+        minMaxFileSystem = minMaxHPath.getFileSystem(conf);
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
+
 }

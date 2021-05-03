@@ -115,22 +115,25 @@ if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
     # zip -q results_0.zip part-r-00000 debug_info_0.txt real_samples_0.txt
 fi
 
-#if [ "$run_all" -ge 2 ] || [ "$run_single" -eq 2 ]; then
-#    # Prepare and run 2st: filter
-#    echo "Filter start"
-#    cd $java_source_path || exit
-#    hdfs dfs -rm -r $bdclab1_hpath_effective/filter_output
-#    hadoop jar main.jar regular.Filter $bdclab1_hpath_effective/sampler_output $bdclab1_hpath_effective/filter_output
-#    cd $project_path || exit
-#    rm -rf ./filter_output
-#    hadoop fs -copyToLocal $bdclab1_hpath_effective/filter_output .
-#    # zip -q results_filter.zip ./filter_output
-#    if [ ! -d "filter_output" ]; then
-#        echo "\033[31mFilter failed\033[0m"
-#        exit
-#    fi
-#    echo "\033[32mFilter success\033[0m"
-#fi
+if [ "$run_all" -ge 2 ] || [ "$run_single" -eq 2 ]; then
+    # Prepare and run 2st: filter
+    echo "Round 2 :: Normalize Fill - start!"
+    cd $java_source_path || exit
+    hdfs dfs -rm -r $bdclab1_hpath_effective/normalize_filler_output
+    hadoop jar main.jar effective.NormalizeFiller `# class name`\
+        $bdclab1_hpath_effective/sample_filter_minmax_output `# input path`\
+        $bdclab1_hpath_effective/normalize_filler_output `# output path`\
+        $bdclab1_hpath_effective/sample_filter_minmax_output/minmax.txt `# path of minmax.txt`
+    cd $local_results_path || exit
+    rm -rf ./normalize_filler_output
+    hadoop fs -copyToLocal $bdclab1_hpath_effective/normalize_filler_output .
+    # zip -q results_filter.zip ./filter_output
+    if [ ! -d "normalize_filler_output" ]; then
+        echo "\033[31mRound 2 :: Normalize Fill - failed!\033[0m"
+        exit
+    fi
+    echo "\033[32mRound 2 :: Normalize Fill - success!\033[0m"
+fi
 #
 #if [ "$run_all" -ge 3 ] || [ "$run_single" -eq 3 ]; then
 #    # Prepare and run 3rd: minmax
