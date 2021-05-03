@@ -168,10 +168,10 @@ public class NormalizeFiller {
 
         private double[] getParameters(ReviewWritable review) {
             double[] ret = new double[len];
-            ret[0] = review.getUserIncome() / 1000;
-            ret[1] = review.getLatitude();
-            ret[2] = review.getLongitude();
-            ret[3] = review.getAltitude();
+            ret[0] = review.getUserIncome() / 10000;
+            ret[1] = review.getLatitude() / 100;
+            ret[2] = review.getLongitude() / 100;
+            ret[3] = review.getAltitude() / 100;
             ret[4] = 1;
             return ret;
         }
