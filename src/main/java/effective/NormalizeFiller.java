@@ -43,16 +43,16 @@ public class NormalizeFiller {
     public static class NormalizeFillerReducer
             extends Reducer<IntWritable, ReviewWritable, NullWritable, ReviewWritable> {
 
-        private static double minRating;
-        private static double maxRating;
-        private double minUserIncome = Double.MAX_VALUE;
-        private double maxUserIncome = Double.MIN_VALUE;
-        private double minLatitude = Double.MAX_VALUE;
-        private double maxLatitude = Double.MIN_VALUE;
-        private double minLongitude = Double.MAX_VALUE;
-        private double maxLongitude = Double.MIN_VALUE;
-        private double minAltitude = Double.MAX_VALUE;
-        private double maxAltitude = Double.MIN_VALUE;
+        private double minRating;
+        private double maxRating;
+        private double minUserIncome;
+        private double maxUserIncome;
+        private double minLatitude;
+        private double maxLatitude;
+        private double minLongitude;
+        private double maxLongitude;
+        private double minAltitude;
+        private double maxAltitude;
 
         private final int len = 5;
         private final double[] w = new double[len];
