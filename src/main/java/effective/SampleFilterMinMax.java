@@ -75,8 +75,7 @@ public class SampleFilterMinMax {
 
         @Override
         protected void cleanup(Context context) throws IOException, InterruptedException {
-            minMaxFileSystem.createFile(minMaxHPath);
-            OutputStream out = minMaxFileSystem.append(minMaxHPath);
+            OutputStream out = minMaxFileSystem.create(minMaxHPath);
             OutputStreamWriter outputStreamReader = new OutputStreamWriter(out, StandardCharsets.UTF_8);
             BufferedWriter minMaxWriter = new BufferedWriter(outputStreamReader);
             minMaxWriter.write(minRating + "\t" + maxRating);

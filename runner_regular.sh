@@ -183,7 +183,7 @@ if [ "$run_all" -ge 5 ] || [ "$run_single" -eq 5 ]; then
     cd $project_path || exit
     rm -rf ./fill_output
     hadoop fs -copyToLocal $bdclab1_hpath_regular/fill_output $local_results_path
-    if [ ! -d "normalize_output" ]; then
+    if [ ! -d "fill_output" ]; then
         echo "\033[31mRound 5 :: Fill - failed!\033[0m"
         exit
     fi
