@@ -7,13 +7,16 @@ java_source_path=$project_path"/src/main/java"
 # HDFS目录
 bdclab1_hpath="/user/armeria/bdclab1"
 bdclab1_hpath_regular=$bdclab1_hpath"/regular"
-bdclab1_hpath_effective=$bdclab1_hpath"/effective"
+#bdclab1_hpath_effective=$bdclab1_hpath"/effective"
 
 # Hadoop临时输出目录
 hadoop_tmp_out_path="/home/armeria/Applications/hadoop-3.3.0/tmp"
 
 # data.txt目录
 data_path=$java_source_path/../resources/data.txt
+
+# 本地结果目录
+local_results_path=$project_path/regular_output
 
 
 echo_usage() {
@@ -79,7 +82,6 @@ if [ $init -eq 1 ]; then
     start-dfs.sh
     hdfs dfs -mkdir -p $bdclab1_hpath/input
     hdfs dfs -mkdir -p $bdclab1_hpath_regular
-    hdfs dfs -mkdir -p $bdclab1_hpath_effective
     hadoop fs -copyFromLocal $data_path $bdclab1_hpath/input
 fi
 
@@ -108,7 +110,7 @@ if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
     # hdfs dfs -cat $bdclab1_hpath_regular/output/part-r-00000 | head -n 20
     cd $project_path || exit
     rm -rf ./sampler_output
-    hadoop fs -copyToLocal $bdclab1_hpath_regular/sampler_output .
+    hadoop fs -copyToLocal $bdclab1_hpath_regular/sampler_output $local_results_path
     if [ ! -d "sampler_output" ]; then
         echo "\033[31mRound 1 :: Sample - failed!\033[0m"
         exit
@@ -128,7 +130,7 @@ if [ "$run_all" -ge 2 ] || [ "$run_single" -eq 2 ]; then
     hadoop jar main.jar regular.Filter $bdclab1_hpath_regular/sampler_output $bdclab1_hpath_regular/filter_output
     cd $project_path || exit
     rm -rf ./filter_output
-    hadoop fs -copyToLocal $bdclab1_hpath_regular/filter_output .
+    hadoop fs -copyToLocal $bdclab1_hpath_regular/filter_output $local_results_path
     # zip -q results_filter.zip ./filter_output
     if [ ! -d "filter_output" ]; then
         echo "\033[31mRound 2 :: Filter - failed!\033[0m"
@@ -145,7 +147,7 @@ if [ "$run_all" -ge 3 ] || [ "$run_single" -eq 3 ]; then
     hadoop jar main.jar regular.MinMax $bdclab1_hpath_regular/filter_output $bdclab1_hpath_regular/minmax_output
     cd $project_path || exit
     rm -rf ./minmax_output
-    hadoop fs -copyToLocal $bdclab1_hpath_regular/minmax_output .
+    hadoop fs -copyToLocal $bdclab1_hpath_regular/minmax_output $local_results_path
     if [ ! -d "minmax_output" ]; then
         echo "\033[31mRound 3 :: MinMax - failed!\033[0m"
         exit
@@ -163,7 +165,7 @@ if [ "$run_all" -ge 4 ] || [ "$run_single" -eq 4 ]; then
     hadoop jar main.jar regular.Normalizer $bdclab1_hpath_regular/filter_output $bdclab1_hpath_regular/normalize_output $bdclab1_hpath_regular/minmax_output/minmax.txt
     cd $project_path || exit
     rm -rf ./normalize_output
-    hadoop fs -copyToLocal $bdclab1_hpath_regular/normalize_output .
+    hadoop fs -copyToLocal $bdclab1_hpath_regular/normalize_output $local_results_path
     if [ ! -d "normalize_output" ]; then
         echo "\033[31mRound 4 :: Normalize - failed!\033[0m"
         exit
@@ -180,7 +182,7 @@ if [ "$run_all" -ge 5 ] || [ "$run_single" -eq 5 ]; then
     hadoop jar main.jar regular.Filler $bdclab1_hpath_regular/normalize_output $bdclab1_hpath_regular/fill_output
     cd $project_path || exit
     rm -rf ./fill_output
-    hadoop fs -copyToLocal $bdclab1_hpath_regular/fill_output .
+    hadoop fs -copyToLocal $bdclab1_hpath_regular/fill_output $local_results_path
     if [ ! -d "normalize_output" ]; then
         echo "\033[31mRound 5 :: Fill - failed!\033[0m"
         exit
