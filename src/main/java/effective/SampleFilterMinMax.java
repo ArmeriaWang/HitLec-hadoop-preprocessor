@@ -77,15 +77,17 @@ public class SampleFilterMinMax {
                     if (!sample.isVacantRating()) {
                         minRating = Math.min(minRating, sample.getRating());
                         maxRating = Math.max(maxRating, sample.getRating());
+                    }
+                    if (!sample.isVacantUserIncome()) {
                         minUserIncome = Math.min(minUserIncome, sample.getUserIncome());
                         maxUserIncome = Math.max(maxUserIncome, sample.getUserIncome());
-                        minAltitude = Math.min(minAltitude, sample.getAltitude());
-                        maxAltitude = Math.max(maxAltitude, sample.getAltitude());
-                        minLatitude = Math.min(minLatitude, sample.getLatitude());
-                        maxLatitude = Math.max(maxLatitude, sample.getLatitude());
-                        minLongitude = Math.min(minLongitude, sample.getLongitude());
-                        maxLongitude = Math.max(maxLongitude, sample.getLongitude());
                     }
+                    minAltitude = Math.min(minAltitude, sample.getAltitude());
+                    maxAltitude = Math.max(maxAltitude, sample.getAltitude());
+                    minLatitude = Math.min(minLatitude, sample.getLatitude());
+                    maxLatitude = Math.max(maxLatitude, sample.getLatitude());
+                    minLongitude = Math.min(minLongitude, sample.getLongitude());
+                    maxLongitude = Math.max(maxLongitude, sample.getLongitude());
                     context.write(NullWritable.get(), sample);
                 }
             }
