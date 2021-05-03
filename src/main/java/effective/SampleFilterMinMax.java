@@ -106,7 +106,7 @@ public class SampleFilterMinMax {
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
         sampleRate = Double.parseDouble(args[2]);
-        minMaxHPath = new Path(args[2]);
+        minMaxHPath = new Path(args[3]);
         minMaxFileSystem = minMaxHPath.getFileSystem(conf);
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
