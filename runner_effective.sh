@@ -96,9 +96,9 @@ if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
     # Prepare and run 1st: sampler
     echo "Round 1 :: Sample Filter MinMax - start!"
     hdfs dfs -rm -r $bdclab1_hpath_effective/sample_filter_minmax_output
-    hadoop jar main.jar effective.SampleFilterMinMax $bdclab1_hpath/input \  # class name, input path
-        $bdclab1_hpath_effective/sample_filter_minmax_output 0.005 \         # output path, sample rate
-        $bdclab1_hpath_effective/sample_filter_minmax_output/minmax.txt     # path of minmax.txt
+    hadoop jar main.jar effective.SampleFilterMinMax $bdclab1_hpath/input  `# class name, input path` \
+        $bdclab1_hpath_effective/sample_filter_minmax_output 0.005         `# output path, sample rate` \
+        $bdclab1_hpath_effective/sample_filter_minmax_output/minmax.txt    `# path of minmax.txt`
     cd $project_path || exit
     rm -rf ./sample_filter_minmax_output
     hadoop fs -copyToLocal $bdclab1_hpath_effective/sample_filter_minmax_output $local_results_path
