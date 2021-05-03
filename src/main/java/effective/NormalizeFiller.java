@@ -56,13 +56,14 @@ public class NormalizeFiller {
 
         private final int len = 5;
         private final double[] w = new double[len];
-        private final double learningRate = 0.002;
+        private final double learningRate = 0.004;
         private final Set<ReviewWritable> vacantRatingReviews = new HashSet<>();
         private final Set<ReviewWritable> vacantUserIncomeReviews = new HashSet<>();
         private final Map<Pair<String, CareerWritable.Career>, Pair<Double, Integer>> userIncomeStats = new HashMap<>();
         private double incomeSumAll;
         private int incomeStatsCnt;
         private double deltaSum;
+        private int printInterval;
 
         private double getDoubleFromMinMax(BufferedReader reader) throws IOException {
             String line = reader.readLine();
@@ -91,6 +92,7 @@ public class NormalizeFiller {
             incomeSumAll = 0.0;
             incomeStatsCnt = 0;
             deltaSum = 0.0;
+            printInterval = 50;
             vacantUserIncomeReviews.clear();
             vacantRatingReviews.clear();
             userIncomeStats.clear();
@@ -133,8 +135,10 @@ public class NormalizeFiller {
                 for (int j = 0; j < len; j++) {
                     w[j] = w[j] + learningRate * delta * x[j];
                 }
-                if (incomeStatsCnt % 100 == 0) {
-                    System.out.println(delta + "\t" + getProduct(x, wPre) + "\t" + deltaSum / incomeStatsCnt);
+                if (incomeStatsCnt % printInterval == 0) {
+                    System.out.println(deltaSum / printInterval);
+                    deltaSum = 0;
+//                    System.out.println(delta + "\t" + getProduct(x, wPre) + "\t" + deltaSum / incomeStatsCnt);
                 }
             }
         }
