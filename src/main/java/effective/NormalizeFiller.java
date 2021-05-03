@@ -111,7 +111,7 @@ public class NormalizeFiller {
                 review.setTemperature(normalizeTemperature(reviewFromIter.getTemperature()));
                 double[] wPre = new double[len];
 
-                System.arraycopy(w, 0, wPre, 0, 4);
+                System.arraycopy(w, 0, wPre, 0, 5);
                 if (review.isVacantUserIncome()) {
                     vacantUserIncomeReviews.add(review.clone());
                     continue;
