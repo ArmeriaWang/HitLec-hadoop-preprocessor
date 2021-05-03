@@ -95,7 +95,7 @@ cd ..
 mkdir -p $local_results_path
 
 if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
-    # Prepare and run 1st: sampler
+    # Prepare and run 1st: Sample Filter MinMax
     echo "Round 1 :: Sample Filter MinMax - start!"
     hdfs dfs -rm -r $bdclab1_hpath_effective/sample_filter_minmax_output
     hadoop jar main.jar effective.SampleFilterMinMax $bdclab1_hpath/input  `# class name, input path` \
@@ -109,14 +109,10 @@ if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
         exit
     fi
     echo "\033[32mRound 1 :: Sample Filter MinMax success!\033[0m"
-    # mv /home/armeria/debug* ./sampler_output
-    # mv /home/armeria/real_samples* ./sampler_output
-    # cd ./sampler_output
-    # zip -q results_0.zip part-r-00000 debug_info_0.txt real_samples_0.txt
 fi
 
 if [ "$run_all" -ge 2 ] || [ "$run_single" -eq 2 ]; then
-    # Prepare and run 2st: filter
+    # Prepare and run 2st: Normalize Fill
     echo "Round 2 :: Normalize Fill - start!"
     cd $java_source_path || exit
     hdfs dfs -rm -r $bdclab1_hpath_effective/normalize_filler_output
@@ -134,58 +130,5 @@ if [ "$run_all" -ge 2 ] || [ "$run_single" -eq 2 ]; then
     fi
     echo "\033[32mRound 2 :: Normalize Fill - success!\033[0m"
 fi
-#
-#if [ "$run_all" -ge 3 ] || [ "$run_single" -eq 3 ]; then
-#    # Prepare and run 3rd: minmax
-#    echo "Minmax start"
-#    cd $java_source_path || exit
-#    hdfs dfs -rm -r $bdclab1_hpath_effective/minmax_output
-#    hadoop jar main.jar regular.MinMax $bdclab1_hpath_effective/filter_output $bdclab1_hpath_effective/minmax_output
-#    cd $project_path || exit
-#    rm -rf ./minmax_output
-#    hadoop fs -copyToLocal $bdclab1_hpath_effective/minmax_output .
-#    if [ ! -d "minmax_output" ]; then
-#        echo "\033[31mMinMax failed\033[0m"
-#        exit
-#    fi
-#    # zip -q results_minmax.zip ./minmax_output
-#    echo "\033[32mMinMax success\033[0m"
-#fi
-#
-#if [ "$run_all" -ge 4 ] || [ "$run_single" -eq 4 ]; then
-#    # Prepare and run 4th: normalize
-#    echo "Normalize start"
-#    cd $java_source_path || exit
-#    hdfs dfs -rm -r $bdclab1_hpath_effective/normalize_output
-#    hdfs dfs -cp $bdclab1_hpath_effective/minmax_output/part-r-00000 $bdclab1_hpath_effective/minmax_output/minmax.txt
-#    hadoop jar main.jar regular.Normalizer $bdclab1_hpath_effective/filter_output $bdclab1_hpath_effective/normalize_output $bdclab1_hpath_effective/minmax_output/minmax.txt
-#    cd $project_path || exit
-#    rm -rf ./normalize_output
-#    hadoop fs -copyToLocal $bdclab1_hpath_effective/normalize_output .
-#    if [ ! -d "normalize_output" ]; then
-#        echo "\033[31mNormalize failed\033[0m"
-#        exit
-#    fi
-#    # zip -q results_normalize.zip ./normalize_output
-#    echo "\033[32mNormalize success\033[0m"
-#fi
-#
-#if [ "$run_all" -ge 5 ] || [ "$run_single" -eq 5 ]; then
-#    # Prepare and run 4th: Fill
-#    echo "Fill start"
-#    cd $java_source_path || exit
-#    hdfs dfs -rm -r $bdclab1_hpath_effective/fill_output
-#    hadoop jar main.jar regular.Filler $bdclab1_hpath_effective/normalize_output $bdclab1_hpath_effective/fill_output
-#    cd $project_path || exit
-#    rm -rf ./fill_output
-#    hadoop fs -copyToLocal $bdclab1_hpath_effective/fill_output .
-#    if [ ! -d "normalize_output" ]; then
-#        echo "\033[31mFill failed\033[0m"
-#        exit
-#    fi
-#    # mv /home/armeria/debug* ./fill_output
-#    # zip -q results_normalize.zip ./normalize_output
-#    echo "\033[32mFill success\033[0m"
-#fi
 
 echo "\033[32mPlan success\033[0m"

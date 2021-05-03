@@ -1,4 +1,4 @@
-package regular;
+package effective;
 
 import common.CareerWritable;
 import common.ReviewWritable;
@@ -180,7 +180,7 @@ public class NormalizeFiller {
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "normalize");
-        job.setJarByClass(Normalizer.class);
+        job.setJarByClass(NormalizeFiller.class);
         job.setMapperClass(NormalizeFillerMapper.class);
         job.setReducerClass(NormalizeFillerReducer.class);
         job.setMapOutputKeyClass(IntWritable.class);
