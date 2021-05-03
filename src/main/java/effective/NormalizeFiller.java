@@ -65,7 +65,7 @@ public class NormalizeFiller {
             maxRating = Double.parseDouble(line);
 
             for (int i = 0; i < len; i++) {
-                w[i] = Math.random() * 0.1;
+                w[i] = Math.random();
             }
             incomeSumAll = 0.0;
             incomeStatsCnt = 0;
@@ -168,10 +168,10 @@ public class NormalizeFiller {
 
         private double[] getParameters(ReviewWritable review) {
             double[] ret = new double[len];
-            ret[0] = review.getUserIncome() / 10000;
-            ret[1] = review.getLatitude() / 100;
-            ret[2] = review.getLongitude() / 100;
-            ret[3] = review.getAltitude() / 100;
+            ret[0] = review.getUserIncome() / 10000.0;
+            ret[1] = review.getLatitude() / 100.0;
+            ret[2] = review.getLongitude() / 100.0;
+            ret[3] = review.getAltitude() / 100.0;
             ret[4] = 1;
             return ret;
         }
