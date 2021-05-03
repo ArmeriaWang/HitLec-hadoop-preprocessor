@@ -95,7 +95,7 @@ rm -r ./classes
 hadoop com.sun.tools.javac.Main -d ./classes ./common/*.java ./effective/*.java ./regular/*.java
 
 # Pack as main.jar
-jar cf main.jar ./class
+jar cf main.jar ./classes
 
 if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
     # Prepare and run 1st: sampler
