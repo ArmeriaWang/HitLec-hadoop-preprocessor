@@ -1,5 +1,5 @@
 # 项目根目录
-project_path="/home/armeria/Work/courses/db_calc/Lab1-1183710106"
+project_path="/home/armeria/Work/courses/bd_calc/Lab1-1183710106"
 
 # .java源代码目录
 java_source_path=$project_path"/src/main/java"

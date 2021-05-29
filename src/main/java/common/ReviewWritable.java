@@ -24,7 +24,7 @@ public class ReviewWritable implements Writable, Cloneable {
     private boolean vacantRating;
     private boolean vacantUserIncome;
 
-    public ReviewWritable() {
+    private ReviewWritable() {
         reviewId = new Text();
         longitude = new DoubleWritable();
         latitude = new DoubleWritable();
