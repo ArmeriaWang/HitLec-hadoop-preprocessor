@@ -108,7 +108,7 @@ if [ "$run_all" -ge 1 ] || [ "$run_single" -eq 1 ]; then
     # Prepare and run 1st: sampler
     echo "Round 1 :: Sample - start!"
     hdfs dfs -rm -r $bdclab1_hpath_regular/sampler_output
-    hadoop jar main.jar regular.Sampler $bdclab1_hpath/input $bdclab1_hpath_regular/sampler_output 0.005
+    hadoop jar main.jar regular.Sampler $bdclab1_hpath/input $bdclab1_hpath_regular/sampler_output 0.1
     # hdfs dfs -cat $bdclab1_hpath_regular/output/part-r-00000 | head -n 20
     cd $local_results_path || exit
     rm -rf ./sampler_output
